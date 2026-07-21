@@ -80,6 +80,21 @@ class GitHubOAuthService:
 
         return response.json()
 
+    @staticmethod
+    def get_commits(access_token, full_name):
+
+        response = requests.get(
+        f"https://api.github.com/repos/{full_name}/commits",
+        headers={
+            "Authorization": f"Bearer {access_token}",
+            "Accept": "application/vnd.github+json",
+        },
+    )
+
+        response.raise_for_status()
+
+        return response.json()
+
 class GitHubSyncService:
 
     @staticmethod

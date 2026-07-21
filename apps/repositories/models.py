@@ -2,6 +2,7 @@ from django.db import models
 
 from apps.accounts.models import Organization
 
+
 class Repository(models.Model):
     VISIBILITY_CHOICES=(
         ("public", "Public"),
@@ -32,4 +33,3 @@ class Repository(models.Model):
 
     def __str__(self):
         return self.full_name
-    

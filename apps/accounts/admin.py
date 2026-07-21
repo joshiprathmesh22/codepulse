@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
-from .models import User,Organization
+from .models import User, Organization
 
 
 @admin.register(User)
@@ -12,24 +12,34 @@ class CustomUserAdmin(UserAdmin):
     list_display = (
         "email",
         "full_name",
-        "is_staff",
-        "is_active",
         "organization",
         "role",
+        "is_staff",
+        "is_active",
+    )
+
+    search_fields = (
+        "email",
+        "full_name",
+    )
+
+    readonly_fields = (
+        "last_login",
+        "date_joined",
     )
 
     fieldsets = (
-
         (None, {
             "fields": (
                 "email",
                 "password",
             )
         }),
-        ("Personal Info", {
+        ("Personal Information", {
             "fields": (
                 "full_name",
-                "avatar",
+                "organization",
+                "role",
             )
         }),
         ("Permissions", {
@@ -45,7 +55,6 @@ class CustomUserAdmin(UserAdmin):
             "fields": (
                 "last_login",
                 "date_joined",
-                "updated_at",
             )
         }),
     )
@@ -58,6 +67,8 @@ class CustomUserAdmin(UserAdmin):
                 "fields": (
                     "email",
                     "full_name",
+                    "organization",
+                    "role",
                     "password1",
                     "password2",
                 ),
@@ -65,12 +76,10 @@ class CustomUserAdmin(UserAdmin):
         ),
     )
 
-    search_fields = (
-        "email",
-        "full_name",
-    )
+
 @admin.register(Organization)
 class OrganizationAdmin(admin.ModelAdmin):
+
     list_display = (
         "name",
         "slug",

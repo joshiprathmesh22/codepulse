@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import RepositoryMemberListCreateView
+from .views import RepositoryMemberListCreateView,SyncCommitsView
 
 urlpatterns = [
     path(
@@ -8,4 +8,10 @@ urlpatterns = [
         RepositoryMemberListCreateView.as_view(),
         name="repository-members",
     ),
+        path(
+        "repositories/<int:repository_id>/commits/",
+        SyncCommitsView.as_view(),
+        name="sync-commits",
+    ),
+    
 ]

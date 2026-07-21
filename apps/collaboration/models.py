@@ -60,7 +60,7 @@ class Commit(models.Model):
 
     author_email=models.EmailField()
 
-    commited_at=models.DateTimeField()
+    committed_at  =models.DateTimeField()
     html_url = models.URLField()
 
     created_at = models.DateTimeField(
