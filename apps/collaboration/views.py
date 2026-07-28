@@ -2,7 +2,7 @@ from rest_framework import generics
 from django.shortcuts import get_object_or_404
 
 from .models import RepositoryMember
-from .serializers import RepositoryMemberSerializer
+from .serializers import RepositoryMemberSerializer, DeveloperAnalyticsSerializer
 from .permissions import IsRepositoryAdmin
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
@@ -182,3 +182,62 @@ class SyncIssuesView(APIView):
                 "count": count,
             }
         )
+
+class DeveloperAnalyticsView(APIView):
+
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, repository_id):
+
+        repository = get_object_or_404(
+            Repository,
+            id=repository_id,
+        )
+
+        members = RepositoryMember.objects.filter(
+            repository=repository
+        )
+
+        data = []
+
+        for member in members:
+
+            commits = Commit.objects.filter(
+                repository=repository,
+                author_email=member.user.email,
+            ).count()
+
+            pull_requests = PullRequest.objects.filter(
+                repository=repository,
+                author=member.user.full_name,
+            ).count()
+
+            issues = Issue.objects.filter(
+                repository=repository,
+                author=member.user.full_name,
+            ).count()
+
+            score = (
+                commits * 5
+                + pull_requests * 10
+                + issues * 3
+            )
+
+            data.append(
+                {
+                    "developer": member.user.full_name,
+                    "email": member.user.email,
+                    "role": member.role,
+                    "commits": commits,
+                    "pull_requests": pull_requests,
+                    "issues": issues,
+                    "score": score,
+                }
+            )
+
+        serializer = DeveloperAnalyticsSerializer(
+            data,
+            many=True,
+        )
+
+        return Response(serializer.data)

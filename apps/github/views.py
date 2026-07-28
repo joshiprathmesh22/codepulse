@@ -6,7 +6,7 @@ from rest_framework.views import APIView
 from .models import OAuthState 
 from .services import GitHubOAuthService, GitHubSyncService
 from apps.repositories.models import Repository
-
+from apps.collaboration.models import RepositoryMember
 class GitHubLoginView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -106,7 +106,12 @@ class SyncRepositoriesView(APIView):
                     "is_active": not repo["archived"],
                 },
             )
-
+            RepositoryMember.objects.get_or_create( 
+                repository=repository, 
+                user=request.user, 
+                defaults={ "role": "owner",
+                }, 
+            )
             synced.append(repository.name)
 
         return Response(

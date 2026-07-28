@@ -21,3 +21,19 @@ class RepositoryMemberSerializer(serializers.ModelSerializer):
             "id",
             "joined_at",
         )
+
+class DeveloperAnalyticsSerializer(serializers.Serializer):
+
+    developer = serializers.CharField()
+
+    email = serializers.EmailField()
+
+    role = serializers.CharField()
+
+    commits = serializers.IntegerField()
+
+    pull_requests = serializers.IntegerField()
+
+    issues = serializers.IntegerField()
+
+    score = serializers.IntegerField()

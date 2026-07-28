@@ -7,6 +7,7 @@ from .views import (
     SyncBranchesView,
     SyncPullRequestsView,
     SyncIssuesView,
+    DeveloperAnalyticsView,
 )
 urlpatterns = [
     path(
@@ -33,5 +34,10 @@ urlpatterns = [
     "repositories/<int:repository_id>/issues/",
     SyncIssuesView.as_view(),
     name="sync-issues",
-    )
+    ),
+    path(
+    "repositories/<int:repository_id>/analytics/",
+    DeveloperAnalyticsView.as_view(),
+    name="developer-analytics",
+),
 ]
