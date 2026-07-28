@@ -95,6 +95,47 @@ class GitHubOAuthService:
 
         return response.json()
 
+    @staticmethod
+    def get_branches(access_token, full_name):
+        response = requests.get(
+        f"https://api.github.com/repos/{full_name}/branches",
+        headers={
+            "Authorization": f"Bearer {access_token}",
+            "Accept": "application/vnd.github+json",
+        },
+    )
+
+        response.raise_for_status()
+
+        return response.json()
+    @staticmethod
+    def get_pull_requests(access_token, full_name):
+
+        response = requests.get(
+        f"https://api.github.com/repos/{full_name}/pulls?state=all",
+        headers={
+            "Authorization": f"Bearer {access_token}",
+            "Accept": "application/vnd.github+json",
+        },
+    )
+
+        response.raise_for_status()
+
+        return response.json()
+    @staticmethod
+    def get_issues(access_token, full_name):
+
+        response = requests.get(
+        f"https://api.github.com/repos/{full_name}/issues?state=all",
+        headers={
+            "Authorization": f"Bearer {access_token}",
+            "Accept": "application/vnd.github+json",
+        },
+    )
+
+        response.raise_for_status()
+
+        return response.json()
 class GitHubSyncService:
 
     @staticmethod
