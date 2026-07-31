@@ -10,7 +10,7 @@ from rest_framework.response import Response
 from apps.github.services import GitHubOAuthService
 from apps.repositories.models import Repository
 from .models import Commit, Branch , PullRequest ,Issue
-
+from .serializers import RepositoryHealthSerializer
 
 
 from apps.repositories.models import Repository
@@ -235,9 +235,74 @@ class DeveloperAnalyticsView(APIView):
                 }
             )
 
+        # ✅ Move this OUTSIDE the loop
+        data.sort(
+            key=lambda developer: developer["score"],
+            reverse=True,
+        )
+
+        for index, developer in enumerate(data, start=1):
+            developer["rank"] = index
+
         serializer = DeveloperAnalyticsSerializer(
             data,
             many=True,
         )
+
+        return Response(serializer.data)
+
+class RepositoryHealthView(APIView):
+    permission_classes=[IsAuthenticated]
+
+    def get(self, request, repository_id):
+
+        repository=get_object_or_404(
+            Repository,
+            id=repository_id,
+        )
+
+        commits=Commit.objects.filter(
+            repository=repository
+        ).count()
+
+        branches=Branch.objects.filter(
+            repository=repository
+        ).count()
+
+        pull_requests=PullRequest.objects.filter(
+            repository=repository
+        ).count()
+
+        issues=Issue.objects.filter(
+            repository=repository
+        ).count()
+
+        health_score=(
+            commits * 2
+            + branches * 5
+            + pull_requests * 8
+            - issues * 3
+        )
+
+        if health_score >=80:
+            status ="Excellent"
+        elif health_score >=50:
+            status ="Good"
+        elif health_score >=20:
+            status ="Average"
+        else:
+            status = "Needs Improvement"
+
+        data = {
+            "repository": repository.name,
+            "health_score": health_score,
+            "commits": commits,
+            "branches": branches,
+            "pull_requests": pull_requests,
+            "issues": issues,
+            "status": status,
+        }
+
+        serializer=RepositoryHealthSerializer(data)
 
         return Response(serializer.data)
