@@ -1,0 +1,41 @@
+# Virtual Environment
+venv/
+env/
+ENV/
+
+# Environment Variables
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# SQLite Database
+db.sqlite3
+db.sqlite3-journal
+
+# VS Code
+.vscode/
+
+# PyCharm
+.idea/
+
+# Static & Media
+media/
+staticfiles/
+
+# Logs
+*.log
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# Python cache
+.pytest_cache/
+.mypy_cache/
+
+# Coverage
+.coverage
+htmlcov/

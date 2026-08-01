@@ -1,41 +1,16 @@
-# Virtual Environment
-venv/
-env/
-ENV/
+# Backend
+backend/venv/
+backend/__pycache__/
+backend/db.sqlite3
+backend/.env
+backend/media/
+backend/staticfiles/
 
-# Environment Variables
-.env
+# Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/.env
 
-# Python
-__pycache__/
-*.py[cod]
-*$py.class
-
-# SQLite Database
-db.sqlite3
-db.sqlite3-journal
-
-# VS Code
+# General
 .vscode/
-
-# PyCharm
-.idea/
-
-# Static & Media
-media/
-staticfiles/
-
-# Logs
-*.log
-
-# OS Files
 .DS_Store
-Thumbs.db
-
-# Python cache
-.pytest_cache/
-.mypy_cache/
-
-# Coverage
-.coverage
-htmlcov/
