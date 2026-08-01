@@ -10,8 +10,9 @@ from rest_framework.response import Response
 from apps.github.services import GitHubOAuthService
 from apps.repositories.models import Repository
 from .models import Commit, Branch , PullRequest ,Issue
-from .serializers import RepositoryHealthSerializer
-
+from .serializers import RepositoryHealthSerializer,CommitActivitySerializer
+from django.db.models import Count
+from django.db.models.functions import TruncDate
 
 from apps.repositories.models import Repository
 from apps.github.services import GitHubOAuthService
@@ -304,5 +305,38 @@ class RepositoryHealthView(APIView):
         }
 
         serializer=RepositoryHealthSerializer(data)
+
+        return Response(serializer.data)
+
+
+class CommitActivityView(APIView):
+
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, repository_id):
+
+        repository = get_object_or_404(
+            Repository,
+            id=repository_id,
+        )
+
+        activity = (
+            Commit.objects.filter(
+                repository=repository,
+            )
+            .annotate(
+                date=TruncDate("committed_at")   # use "committed_at" if you renamed the field
+            )
+            .values("date")
+            .annotate(
+                commits=Count("id")
+            )
+            .order_by("date")
+        )
+
+        serializer = CommitActivitySerializer(
+            activity,
+            many=True,
+        )
 
         return Response(serializer.data)

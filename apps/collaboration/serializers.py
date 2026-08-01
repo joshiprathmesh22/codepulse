@@ -52,3 +52,10 @@ class RepositoryHealthSerializer(serializers.Serializer):
     pull_requests=serializers.IntegerField()
 
     status=serializers.CharField()
+
+class CommitActivitySerializer(serializers.Serializer):
+
+    date = serializers.DateField()
+
+    commits = serializers.IntegerField()
+
