@@ -39,30 +39,33 @@ class RegisterView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class LoginView(APIView):
-    permission_classes=[AllowAny]
+    permission_classes = [AllowAny]
 
-    def post(self,request):
-        serializer=LoginSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        user=serializer.validated_data["user"]
-        refresh=RefreshToken.for_user(user)
+    def post(self, request):
+        print(request.data)   # ADD THIS
 
-        return Response(
-            {
-                "user": {
-                    "id": user.id,
-                    "email": user.email,
-                    "full_name": user.full_name,
-                    "organization": user.organization.name if user.organization else None,
-                    "role": user.role,
-                },
-                "tokens": {
-                    "refresh": str(refresh),
-                    "access": str(refresh.access_token),
-                },
+        serializer = LoginSerializer(data=request.data)
+
+        if not serializer.is_valid():
+            print(serializer.errors)   # ADD THIS
+            return Response(serializer.errors, status=400)
+
+        user = serializer.validated_data["user"]
+        refresh = RefreshToken.for_user(user)
+
+        return Response({
+            "user": {
+                "id": user.id,
+                "email": user.email,
+                "full_name": user.full_name,
+                "organization": user.organization.name if user.organization else None,
+                "role": user.role,
             },
-            status=status.HTTP_200_OK,
-        )
+            "tokens": {
+                "access": str(refresh.access_token),
+                "refresh": str(refresh),
+            },
+        })
 
 class MeView(APIView):
 

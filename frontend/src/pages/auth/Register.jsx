@@ -1,7 +1,8 @@
-import { useState } from 'react';
-// import './css/login.css';
-import "../../css/Login.css";
-import { login } from "../../services/authService";
+import { useState } from "react";
+import "../../css/Register.css";
+import { register } from "../../services/authService";
+
+
 
 // ── Inline SVG Icons ─────────────────────────────────────────────────────────
 
@@ -206,47 +207,63 @@ const DashboardMockup = () => (
 
 // ── Main Component ────────────────────────────────────────────────────────────
 
-const Login = () => {
-  const [email, setEmail]             = useState('');
-  const [password, setPassword]       = useState('');
-  const [showPw, setShowPw]           = useState(false);
-  const [remember, setRemember]       = useState(true);
-  const [loading, setLoading]         = useState(false);
-  const [error, setError]             = useState('');
+const Register = () => {
+  const [organizationName, setOrganizationName] = useState("");
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
+  const [showPw, setShowPw] = useState(false);
+  const [showConfirmPw, setShowConfirmPw] = useState(false);
 
-  setError("");
-  setLoading(true);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  try {
-    const data = await login(email, password);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-    localStorage.setItem("access", data.access);
-    localStorage.setItem("refresh", data.refresh);
+    setError("");
 
-    // Redirect to dashboard
-    window.location.href = "/dashboard";
+    if (password !== confirmPassword) {
+      setError("Passwords do not match.");
+      return;
+    }
 
-  } catch (err) {
-    setError(
-      err?.response?.data?.detail ||
-      err?.response?.data?.message ||
-      "Invalid credentials. Please try again."
-    );
-  } finally {
-    setLoading(false);
-  }
-};
+    setLoading(true);
+
+    try {
+      const data = await register({
+        organization_name: organizationName,
+        full_name: fullName,
+        email,
+        password,
+      });
+
+      localStorage.setItem("access", data.tokens.access);
+      localStorage.setItem("refresh", data.tokens.refresh);
+
+      // Redirect to dashboard
+      window.location.href = "/dashboard";
+
+    } catch (err) {
+      setError(
+        err?.response?.data?.detail ||
+        err?.response?.data?.message ||
+        "Registration failed. Please try again."
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleGitHub = () => {
     window.location.href =
-"http://127.0.0.1:8000/api/github/login/";
+      "http://127.0.0.1:8000/api/github/login/";
   };
 
   return (
-    <div className="lp-root"> 
+    <div className="lp-root">
 
       {/* ── Nav ─────────────────────────────────────────────── */}
       <nav className="lp-nav">
@@ -256,7 +273,7 @@ const handleSubmit = async (e) => {
         </a>
         <div className="lp-nav-right">
           <span className="lp-nav-hint">Don't have an account?</span>
-          <a href="/register/" className="lp-nav-link">Sign up</a>
+          <a href="/register" className="lp-nav-link">Sign up</a>
         </div>
       </nav>
 
@@ -412,4 +429,4 @@ const handleSubmit = async (e) => {
   );
 };
 
-export default Login;
+export default Register;
