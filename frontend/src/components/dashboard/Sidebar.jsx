@@ -1,8 +1,14 @@
+import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
+
 import PulseIcon from "../icons/PulseIcon";
+import { syncRepositories } from "../../services/githubServices";
 
 const Sidebar = () => {
   const location = useLocation();
+
+  const [syncing, setSyncing] = useState(false);
+  const [syncMessage, setSyncMessage] = useState("");
 
   const menu = [
     {
@@ -55,6 +61,31 @@ const Sidebar = () => {
     },
   ];
 
+  const handleSync = async () => {
+    try {
+      setSyncing(true);
+      setSyncMessage("");
+
+      const result = await syncRepositories();
+
+      console.log("Sync result:", result);
+
+      setSyncMessage(
+        `${result.count || 0} repositories synced`
+      );
+    } catch (error) {
+      console.error("GitHub sync error:", error);
+
+      setSyncMessage(
+        error.response?.data?.detail ||
+        error.response?.data?.error ||
+        "Sync failed"
+      );
+    } finally {
+      setSyncing(false);
+    }
+  };
+
   return (
     <aside className="dashboard-sidebar">
 
@@ -88,6 +119,28 @@ const Sidebar = () => {
       </nav>
 
       <div className="dashboard-sidebar-bottom">
+
+        <button
+          className="sync-github-btn"
+          onClick={handleSync}
+          disabled={syncing}
+        >
+          <span className="sync-github-icon">
+            ↻
+          </span>
+
+          <span>
+            {syncing
+              ? "Syncing..."
+              : "Sync GitHub"}
+          </span>
+        </button>
+
+        {syncMessage && (
+          <div className="sync-message">
+            {syncMessage}
+          </div>
+        )}
 
         <div className="sync-status">
           <span className="sync-dot" />

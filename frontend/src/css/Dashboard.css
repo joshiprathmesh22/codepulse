@@ -59,7 +59,7 @@
 }
 
 .dashboard-sidebar-bottom {
-  margin-top: auto;
+  margin-top: 25px;
 }
 
 .sync-status {
@@ -292,7 +292,61 @@
   }
 
 }
+.sync-github-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* gap: 8px; */
 
+  padding: 11px 14px;
+
+  /* margin-bottom: 10px; */
+
+  border: 1px solid #234477;
+  border-radius: 8px;
+
+  background: #10264a;
+  color: #6fa0ff;
+
+  font-size: 13px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: 0.2s ease;
+}
+
+.sync-github-btn:hover {
+  background: #17345f;
+  border-color: #3267ed;
+  color: white;
+}
+
+.sync-github-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.sync-github-icon {
+  font-size: 17px;
+}
+
+.sync-message {
+  margin-bottom: 10px;
+
+  padding: 8px 10px;
+
+  border-radius: 7px;
+
+  background: #091a2b;
+
+  color: #7f91aa;
+
+  font-size: 11px;
+
+  text-align: center;
+}
 /* ============================= */
 /* COMMIT ACTIVITY */
 /* ============================= */
@@ -587,4 +641,14 @@
     grid-template-columns: 1fr;
   }
 
+}
+
+.dashboard-sync-message {
+  margin-bottom: 18px;
+  padding: 12px 15px;
+  border: 1px solid #164f3c;
+  border-radius: 8px;
+  background: #091f19;
+  color: #16d995;
+  font-size: 13px;
 }

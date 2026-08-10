@@ -66,19 +66,43 @@ class GitHubOAuthService:
 
         return github_account
     @staticmethod
+    @staticmethod
     def get_repositories(access_token):
 
-        response = requests.get(
-        "https://api.github.com/user/repos",
-        headers={
-            "Authorization": f"Bearer {access_token}",
-            "Accept": "application/vnd.github+json",
-        },
-    )
+        all_repositories = []
 
-        response.raise_for_status()
+        page = 1
 
-        return response.json()
+        while True:
+
+            response = requests.get(
+                "https://api.github.com/user/repos",
+                headers={
+                "Authorization": f"Bearer {access_token}",
+                "Accept": "application/vnd.github+json",
+                },
+                params={
+                "per_page": 100,
+                "page": page,
+                "sort": "updated",
+                },
+            )
+
+            response.raise_for_status()
+
+            repositories = response.json()
+
+            if not repositories:
+                break
+
+            all_repositories.extend(repositories)
+
+            if len(repositories) < 100:
+                break
+
+            page += 1
+
+        return all_repositories
 
     @staticmethod
     def get_commits(access_token, full_name):
@@ -184,6 +208,10 @@ class GitHubSyncService:
                 },
             )
 
+            GitHubSyncService.sync_repository_data(
+                repository,
+                access_token,
+            )
             synced.append(repository)
 
         return synced

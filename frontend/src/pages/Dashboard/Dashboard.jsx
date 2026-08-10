@@ -4,12 +4,16 @@ import {
   getDashboardOverview,
 } from "../../services/dashboardService";
 
+
+import { syncRepositories } from "../../services/githubServices";
+
 import DashboardLayout from "../../components/dashboard/DashboardLayout";
 import Sidebar from "../../components/dashboard/Sidebar";
 import Topbar from "../../components/dashboard/Topbar";
 import StatCard from "../../components/dashboard/StatCard";
 import CommitActivity from "../../components/dashboard/CommitActivity";
 import RepositoryHealth from "../../components/dashboard/RepositoryHealth";
+
 import "../../css/Dashboard.css";
 
 function Dashboard() {
@@ -21,6 +25,13 @@ function Dashboard() {
 
   const [error, setError] =
     useState("");
+
+  const [syncing, setSyncing] =
+    useState(false);
+
+  const [syncMessage, setSyncMessage] =
+    useState("");
+
 
   useEffect(() => {
 
@@ -54,7 +65,57 @@ function Dashboard() {
 
   }, []);
 
+
+  const handleSyncRepositories = async () => {
+
+    try {
+
+      setSyncing(true);
+      setSyncMessage("");
+      setError("");
+
+      const result =
+        await syncRepositories();
+
+      console.log(
+        "GitHub sync result:",
+        result
+      );
+
+      setSyncMessage(
+        `${result.count || 0} repositories synced successfully.`
+      );
+
+      // Reload dashboard data
+      const updatedData =
+        await getDashboardOverview();
+
+      setData(updatedData);
+
+    } catch (err) {
+
+      console.error(
+        "GitHub sync error:",
+        err
+      );
+
+      setError(
+        err.response?.data?.detail ||
+        err.response?.data?.error ||
+        "Failed to sync GitHub repositories."
+      );
+
+    } finally {
+
+      setSyncing(false);
+
+    }
+
+  };
+
+
   return (
+
     <DashboardLayout
       sidebar={<Sidebar />}
       topbar={<Topbar />}
@@ -66,27 +127,56 @@ function Dashboard() {
         </div>
       )}
 
+
       {error && (
         <div className="dashboard-error">
           {error}
         </div>
       )}
 
+
+      {syncMessage && (
+        <div className="dashboard-sync-message">
+          ✓ {syncMessage}
+        </div>
+      )}
+
+
       {data && !loading && !error && (
 
         <>
+
           <div className="dashboard-heading">
 
-            <h1>
-              Good morning 👋
-            </h1>
+            <div>
 
-            <p>
-              Here's what's happening with your
-              engineering teams today.
-            </p>
+              <h1>
+                Good morning 👋
+              </h1>
+
+              <p>
+                Here's what's happening with your
+                engineering teams today.
+              </p>
+
+            </div>
+
+
+            {/* <button
+              className="sync-github-btn"
+              onClick={handleSyncRepositories}
+              disabled={syncing}
+            >
+
+              {syncing
+                ? "Syncing..."
+                : "↻ Sync GitHub"
+              }
+
+            </button> */}
 
           </div>
+
 
           <div className="dashboard-stats">
 
@@ -122,26 +212,38 @@ function Dashboard() {
 
           </div>
 
+
           <CommitActivity
-            activity={data.commit_activity} 
+            activity={data.commit_activity}
           />
+
 
           <div className="dashboard-bottom-grid">
 
-          <RepositoryHealth />
+            <RepositoryHealth />
 
-      <div className="recent-activity-card">
-          <h2>Recent Activity</h2>
-      <p>Coming next...</p>
-      </div>
+            <div className="recent-activity-card">
 
-</div>
+              <h2>
+                Recent Activity
+              </h2>
+
+              <p>
+                Coming next...
+              </p>
+
+            </div>
+
+          </div>
+
         </>
 
       )}
 
     </DashboardLayout>
+
   );
+
 }
 
 export default Dashboard;

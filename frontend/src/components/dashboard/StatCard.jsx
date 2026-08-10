@@ -8,9 +8,7 @@ const StatCard = ({
     <div className="dashboard-stat-card">
 
       <div className="stat-card-header">
-        <span>
-          {title}
-        </span>
+        <span>{title}</span>
       </div>
 
       <div className="stat-card-value">
