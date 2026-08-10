@@ -69,16 +69,40 @@ class GitHubCallbackView(APIView):
             access_token,
         )
 
-        oauth_state.is_used = True
-        oauth_state.save()
+        synced_repositories = GitHubSyncService.sync_repositories(
+            oauth_state.user,
+            access_token,
+        )
+
+        sync_results=[]
+
+        for repository in synced_repositories:
+            result = GitHubSyncService.sync_repository_data(
+                repository,
+                access_token,
+            )
+
+        sync_results.append({
+            "repository": repository.name,
+            **result,
+        })
+        # oauth_state.is_used = True
+        # oauth_state.save()
 
         return Response(
             {
                 "message": "GitHub account connected successfully.",
                 "github_username": github_user["login"],
+                "repositories_synced": len(synced_repositories),
+                "repositories": [
+                    repository.name
+                    for repository in synced_repositories
+                ],
+                "data_sync": sync_results,
             },
             status=status.HTTP_200_OK,
-        )   
+        )  
+     
 class SyncRepositoriesView(APIView):
     permission_classes = [IsAuthenticated]
 

@@ -11,4 +11,6 @@ urlpatterns = [
     path("api/github/", include("apps.github.urls")),
 
     path("api/", include("apps.collaboration.urls")),
+    path("api/dashboard/", include("apps.dashboard.urls")),
+
 ]

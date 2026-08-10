@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     "apps.repositories",
     "apps.collaboration",
     "apps.github",
+    "apps.dashboard",
     "corsheaders",
 
 ]
