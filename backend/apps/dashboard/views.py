@@ -45,12 +45,15 @@ class DashboardOverviewView(APIView):
         )
 
         # -----------------------------
-        # Commit activity - last 7 days
+        # Dates - last 7 days
         # -----------------------------
 
         today = timezone.localdate()
-
         start_date = today - timedelta(days=6)
+
+        # -----------------------------
+        # Commit Activity - last 7 days
+        # -----------------------------
 
         commit_activity = (
             commits
@@ -89,6 +92,77 @@ class DashboardOverviewView(APIView):
                 }
             )
 
+        # -----------------------------
+        # Pull Request Trends
+        # -----------------------------
+
+        pull_request_activity = (
+            pull_requests
+            .filter(
+                created_at__date__gte=start_date,
+                created_at__date__lte=today,
+            )
+            .annotate(
+                date=TruncDate("created_at")
+            )
+            .values("date")
+            .annotate(
+                total=Count("id"),
+                merged=Count(
+                    "id",
+                    filter=__import__(
+                        "django.db.models",
+                        fromlist=["Q"]
+                    ).Q(merged=True),
+                ),
+                closed=Count(
+                    "id",
+                    filter=__import__(
+                        "django.db.models",
+                        fromlist=["Q"]
+                    ).Q(state="closed"),
+                ),
+            )
+            .order_by("date")
+        )
+
+        pull_request_map = {
+            item["date"].isoformat(): {
+                "opened": item["total"],
+                "merged": item["merged"],
+                "closed": item["closed"],
+            }
+            for item in pull_request_activity
+        }
+
+        pull_request_activity_data = []
+
+        for i in range(7):
+
+            date = start_date + timedelta(days=i)
+
+            data = pull_request_map.get(
+                date.isoformat(),
+                {
+                    "opened": 0,
+                    "merged": 0,
+                    "closed": 0,
+                },
+            )
+
+            pull_request_activity_data.append(
+                {
+                    "date": date.isoformat(),
+                    "opened": data["opened"],
+                    "merged": data["merged"],
+                    "closed": data["closed"],
+                }
+            )
+
+        # -----------------------------
+        # Dashboard Response
+        # -----------------------------
+
         return Response(
             {
                 "repositories": repositories.count(),
@@ -106,5 +180,7 @@ class DashboardOverviewView(APIView):
                 "issues": issues.count(),
 
                 "commit_activity": commit_activity_data,
+
+                "pull_request_activity": pull_request_activity_data,
             }
         )

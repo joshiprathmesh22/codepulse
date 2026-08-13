@@ -1,0 +1,45 @@
+
+/* ============================= */
+/* RECENT ACTIVITY PLACEHOLDER */
+/* ============================= */
+
+.recent-activity-card {
+  padding: 22px;
+
+  border: 1px solid #18283e;
+  border-radius: 11px;
+
+  background: #091321;
+}
+
+.recent-activity-card h2 {
+  margin: 0;
+
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.recent-activity-card p {
+  margin-top: 15px;
+
+  color: #738197;
+  font-size: 12px;
+}
+
+@media (max-width: 900px) {
+
+  .dashboard-bottom-grid {
+    grid-template-columns: 1fr;
+  }
+
+}
+
+.dashboard-sync-message {
+  margin-bottom: 18px;
+  padding: 12px 15px;
+  border: 1px solid #164f3c;
+  border-radius: 8px;
+  background: #091f19;
+  color: #16d995;
+  font-size: 13px;
+}

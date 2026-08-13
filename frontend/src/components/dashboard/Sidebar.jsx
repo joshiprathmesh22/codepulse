@@ -61,30 +61,32 @@ const Sidebar = () => {
     },
   ];
 
-  const handleSync = async () => {
-    try {
-      setSyncing(true);
-      setSyncMessage("");
+const handleSync = async () => {
+  try {
+    setSyncing(true);
+    setSyncMessage("");
 
-      const result = await syncRepositories();
+    const result = await syncRepositories();
 
-      console.log("Sync result:", result);
+    console.log("Sync result:", result);
 
-      setSyncMessage(
-        `${result.count || 0} repositories synced`
-      );
-    } catch (error) {
-      console.error("GitHub sync error:", error);
-
-      setSyncMessage(
-        error.response?.data?.detail ||
-        error.response?.data?.error ||
-        "Sync failed"
-      );
-    } finally {
-      setSyncing(false);
-    }
-  };
+    setSyncMessage(
+      `${result.repositories_synced || 0} repositories synced`
+    );
+  } catch (error) {
+    console.error("GitHub sync error:", error);
+    console.error("Response:", error.response?.data);
+    setSyncMessage(
+      JSON.stringify(
+      error.response?.data?.detail ||
+      error.response?.data?.error ||
+      "Sync failed"
+      )
+    );
+  } finally {
+    setSyncing(false);
+  }
+};
 
   return (
     <aside className="dashboard-sidebar">

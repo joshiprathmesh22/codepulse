@@ -3,16 +3,21 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .models import OAuthState 
+from .models import OAuthState
 from .services import GitHubOAuthService, GitHubSyncService
+
 from apps.repositories.models import Repository
 from apps.collaboration.models import RepositoryMember
+
+
 class GitHubLoginView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
 
-        url = GitHubOAuthService.get_authorization_url(request.user)
+        url = GitHubOAuthService.get_authorization_url(
+            request.user
+        )
 
         return Response({
             "authorization_url": url
@@ -40,7 +45,9 @@ class GitHubCallbackView(APIView):
                 state=state,
                 is_used=False,
             )
+
         except OAuthState.DoesNotExist:
+
             return Response(
                 {
                     "error": "Invalid or expired OAuth state."
@@ -48,11 +55,14 @@ class GitHubCallbackView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        token_data = GitHubOAuthService.exchange_code_for_token(code)
+        token_data = GitHubOAuthService.exchange_code_for_token(
+            code
+        )
 
         access_token = token_data.get("access_token")
 
         if not access_token:
+
             return Response(
                 {
                     "error": "Failed to obtain access token.",
@@ -61,7 +71,9 @@ class GitHubCallbackView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        github_user = GitHubOAuthService.get_user(access_token)
+        github_user = GitHubOAuthService.get_user(
+            access_token
+        )
 
         GitHubOAuthService.save_github_account(
             oauth_state.user,
@@ -69,50 +81,57 @@ class GitHubCallbackView(APIView):
             access_token,
         )
 
-        synced_repositories = GitHubSyncService.sync_repositories(
+        sync_results = GitHubSyncService.sync_repositories(
             oauth_state.user,
             access_token,
         )
 
-        sync_results=[]
-
-        for repository in synced_repositories:
-            result = GitHubSyncService.sync_repository_data(
-                repository,
-                access_token,
-            )
-
-        sync_results.append({
-            "repository": repository.name,
-            **result,
-        })
-        # oauth_state.is_used = True
-        # oauth_state.save()
+        oauth_state.is_used = True
+        oauth_state.save()
 
         return Response(
             {
                 "message": "GitHub account connected successfully.",
                 "github_username": github_user["login"],
-                "repositories_synced": len(synced_repositories),
-                "repositories": [
-                    repository.name
-                    for repository in synced_repositories
-                ],
-                "data_sync": sync_results,
+                "repositories_synced": sync_results["repositories"],
+                "commits_synced": sync_results["commits"],
+                "branches_synced": sync_results["branches"],
+                "pull_requests_synced": sync_results["pull_requests"],
+                "issues_synced": sync_results["issues"],
             },
             status=status.HTTP_200_OK,
-        )  
-     
+        )
+
+
 class SyncRepositoriesView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
 
-        github_account = request.user.github_account
+        try:
+            github_account = request.user.github_account
 
-        repositories = GitHubOAuthService.get_repositories(
-            github_account.access_token
-        )
+        except Exception:
+            return Response(
+                {
+                    "error": "GitHub is not connected to this account. Please connect GitHub first."
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        try:
+            repositories = GitHubOAuthService.get_repositories(
+                github_account.access_token
+            )
+
+        except Exception as error:
+            return Response(
+                {
+                    "error": "Unable to fetch repositories from GitHub.",
+                    "details": str(error),
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         synced = []
 
@@ -124,46 +143,94 @@ class SyncRepositoriesView(APIView):
                     "organization": request.user.organization,
                     "name": repo["name"],
                     "full_name": repo["full_name"],
-                    "description": repo["description"] or "",
-                    "visibility": "private" if repo["private"] else "public",
-                    "default_branch": repo["default_branch"],
-                    "is_active": not repo["archived"],
+                    "description": repo.get("description") or "",
+                    "visibility": (
+                        "private"
+                        if repo.get("private")
+                        else "public"
+                    ),
+                    "default_branch": (
+                        repo.get("default_branch")
+                        or "main"
+                    ),
+                    "is_active": not repo.get(
+                        "archived",
+                        False
+                    ),
                 },
             )
-            RepositoryMember.objects.get_or_create( 
-                repository=repository, 
-                user=request.user, 
-                defaults={ "role": "owner",
-                }, 
+
+            RepositoryMember.objects.get_or_create(
+                repository=repository,
+                user=request.user,
+                defaults={
+                    "role": "owner",
+                },
             )
+
+            # Sync commits, branches, PRs and issues
+            GitHubSyncService.sync_repository_data(
+                repository,
+                github_account.access_token,
+            )
+
             synced.append(repository.name)
 
         return Response(
-            {
-                "message": "Repositories synced successfully.",
-                "count": len(synced),
-                "repositories": synced,
-            }
-        )
-    
+    {
+        "message": "GitHub repositories synced successfully.",
+        "count": len(synced),
+        "repositories": synced,
+        "pull_request_counts": {
+            repository.full_name: repository.pull_requests.count()
+            for repository in Repository.objects.filter(
+                organization=request.user.organization
+            )
+        },
+    },
+    status=status.HTTP_200_OK,
+)
 class SyncCommitsView(APIView):
-
-    permsission_classes=[IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def post(self, request, repository_id):
 
-        github_account=request.user.github_account
+        try:
+            github_account = request.user.github_account
 
-        repository=Repository.objects.get(
-            id=repository_id
-        )
-        commits=GitHubSyncService.get_commits(
+        except Exception:
+
+            return Response(
+                {
+                    "error": "GitHub account is not connected."
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        try:
+            repository = Repository.objects.get(
+                id=repository_id,
+                organization=request.user.organization,
+            )
+
+        except Repository.DoesNotExist:
+
+            return Response(
+                {
+                    "error": "Repository not found."
+                },
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        commits = GitHubOAuthService.get_commits(
             github_account.access_token,
             repository.full_name,
         )
+
         return Response(
             {
-                "counts": len(commits),
+                "count": len(commits),
                 "commits": commits,
-            }
+            },
+            status=status.HTTP_200_OK,
         )

@@ -135,11 +135,17 @@ class GitHubOAuthService:
     @staticmethod
     def get_pull_requests(access_token, full_name):
 
+        url = f"https://api.github.com/repos/{full_name}/pulls"
+
         response = requests.get(
-        f"https://api.github.com/repos/{full_name}/pulls?state=all",
+        url,
         headers={
             "Authorization": f"Bearer {access_token}",
             "Accept": "application/vnd.github+json",
+        },
+        params={
+            "state": "all",
+            "per_page": 100,
         },
     )
 
@@ -208,13 +214,27 @@ class GitHubSyncService:
                 },
             )
 
-            GitHubSyncService.sync_repository_data(
-                repository,
-                access_token,
+            sync_result=(
+                GitHubSyncService.sync_repository_data(
+                    repository,
+                    access_token,
+                )         
             )
-            synced.append(repository)
 
-        return synced
+            total_commits += sync_result["commits"]
+            total_branches += sync_result["branches"]
+            total_pull_requests += sync_result["pull_requests"]
+            total_issues += sync_result["issues"]
+
+            synced.append(repository)
+            
+        return {
+            "repositories": len(synced),
+            "commits": total_commits,
+            "branches": total_branches,
+            "pull_requests": total_pull_requests,
+            "issues": total_issues,
+        }
 
     @staticmethod
     def sync_repository_data(
@@ -310,7 +330,9 @@ class GitHubSyncService:
                 full_name,
             )
         )
-
+        print(
+            f"GitHub PRs for {full_name}: {len(pull_requests)}"
+)
         for pr_data in pull_requests:
 
             PullRequest.objects.update_or_create(

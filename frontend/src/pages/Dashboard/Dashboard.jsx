@@ -13,8 +13,14 @@ import Topbar from "../../components/dashboard/Topbar";
 import StatCard from "../../components/dashboard/StatCard";
 import CommitActivity from "../../components/dashboard/CommitActivity";
 import RepositoryHealth from "../../components/dashboard/RepositoryHealth";
+import PullRequestTrends from "../../components/dashboard/PullRequestTrends";
 
 import "../../css/Dashboard.css";
+import "../../css/commitactivity.css";
+import "../../css/repositoryhealth.css";
+import "../../css/recentactivity.css";
+import "../../css/Pullrequest.css";
+
 
 function Dashboard() {
 
@@ -216,7 +222,10 @@ function Dashboard() {
           <CommitActivity
             activity={data.commit_activity}
           />
-
+          
+          <PullRequestTrends
+            activity={data.pull_request_activity}
+          />
 
           <div className="dashboard-bottom-grid">
 
