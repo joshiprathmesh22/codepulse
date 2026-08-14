@@ -218,18 +218,22 @@ function Dashboard() {
 
           </div>
 
+<div className="dashboard-charts-grid">
 
-          <CommitActivity
-            activity={data.commit_activity}
-          />
-          
-          <PullRequestTrends
-            activity={data.pull_request_activity}
-          />
+  <CommitActivity
+    activity={data.commit_activity}
+  />
 
-          <div className="dashboard-bottom-grid">
+  <PullRequestTrends
+    activity={data.pull_request_activity}
+  />
 
-            <RepositoryHealth />
+  <RepositoryHealth
+    health={data.repository_health}
+  />
+
+
+ 
 
             <div className="recent-activity-card">
 

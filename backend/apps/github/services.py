@@ -330,9 +330,8 @@ class GitHubSyncService:
                 full_name,
             )
         )
-        print(
-            f"GitHub PRs for {full_name}: {len(pull_requests)}"
-)
+        print(f"{full_name} -> {len(pull_requests)} PRs")
+        
         for pr_data in pull_requests:
 
             PullRequest.objects.update_or_create(

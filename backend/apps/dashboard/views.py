@@ -27,7 +27,57 @@ class DashboardOverviewView(APIView):
         repositories = Repository.objects.filter(
             organization=organization
         )
+        health_data=[]
 
+        for repository in repositories:
+
+            total_commits=Commit.objects.filter(
+                repository=repository,
+            ).count()
+
+            if not repository.is_active:
+                status="inactive"
+
+            elif total_commits > 0:
+                status="healthy"
+
+            else:
+                status= "attention"
+
+            health_data.append(
+                {
+                    "id": repository.id,
+                    "name": repository.name,
+                    "status": status,
+                    "total_commits": total_commits,
+                }
+            )
+        total_repositories=len(health_data)
+
+        healthy_repositories = sum(
+            1
+            for repository in health_data
+            if repository["status"] == "healthy"
+        )
+
+        attention_repositories = sum(
+            1
+            for repository in health_data
+            if repository["status"]=="attention"
+        )
+
+        inactive_repositories = sum(
+            1
+            for repository in health_data
+            if repository["status"] == "inactive"
+        )
+        health_score=(
+            round(
+                (healthy_repositories/total_repositories)*100
+            )
+            if total_repositories > 0
+            else 0
+        )
         commits = Commit.objects.filter(
             repository__organization=organization
         )
@@ -180,7 +230,18 @@ class DashboardOverviewView(APIView):
                 "issues": issues.count(),
 
                 "commit_activity": commit_activity_data,
-
+            
                 "pull_request_activity": pull_request_activity_data,
+                "repository_health": {
+                    "score": health_score,
+
+                    "healthy": healthy_repositories,
+
+                    "attention": attention_repositories,
+
+                    "inactive": inactive_repositories,
+
+                    "repositories": health_data,
+                },
             }
         )

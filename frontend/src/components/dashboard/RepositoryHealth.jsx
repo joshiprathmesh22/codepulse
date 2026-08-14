@@ -1,119 +1,169 @@
 import { useEffect, useState } from "react";
 import { getRepositories } from "../../services/dashboardService";
 
-const RepositoryHealth = () => {
-  const [repositories, setRepositories] = useState([]);
-  const [loading, setLoading] = useState(true);
+const RepositoryHealth = ({ health }) => {
 
-  useEffect(() => {
-    const loadRepositories = async () => {
-      try {
-        const data = await getRepositories();
+  if (!health) {
+    return null;
+  }
 
-        setRepositories(
-          Array.isArray(data)
-            ? data
-            : data.results || []
-        );
-      } catch (error) {
-        console.error(
-          "Failed to load repositories:",
-          error
-        );
-      } finally {
-        setLoading(false);
-      }
-    };
+  const score = health.score || 0;
 
-    loadRepositories();
-  }, []);
+  const getHealthStatus = () => {
+    if (score >= 80) {
+      return "Good Health";
+    }
+
+    if (score >= 50) {
+      return "Needs Attention";
+    }
+
+    return "Poor Health";
+  };
+
+  const getHealthMessage = () => {
+    if (score >= 80) {
+      return "Your repositories are healthy";
+    }
+
+    if (score >= 50) {
+      return "Some repositories need attention";
+    }
+
+    return "Several repositories need attention";
+  };
 
   return (
     <div className="repository-health-card">
 
       <div className="repository-health-header">
-        <div>
-          <h2>Repository Health</h2>
 
-          <p>
-            Overview of your repositories
-          </p>
-        </div>
+        <h2>Repository Health</h2>
 
-        <span className="repository-count">
-          {repositories.length} repositories
-        </span>
+        <button className="repository-health-view">
+          View all
+        </button>
+
       </div>
 
-      {loading ? (
-        <div className="repository-health-loading">
-          Loading repositories...
+      <div className="repository-health-main">
+
+        <div
+          className="health-circle"
+          style={{
+            "--health-progress": `${score}%`,
+          }}
+        >
+          <div className="health-circle-inner">
+
+            <strong>
+              {score}
+            </strong>
+
+            <span>
+              /100
+            </span>
+
+          </div>
         </div>
-      ) : repositories.length === 0 ? (
-        <div className="repository-health-empty">
-          No repositories found.
-        </div>
-      ) : (
-        <div className="repository-list">
 
-          {repositories
-            .slice(0, 5)
-            .map((repository) => (
+        <div className="health-overview">
 
-              <div
-                className="repository-row"
-                key={repository.id}
-              >
+          <h3>
+            {getHealthStatus()}
+          </h3>
 
-                <div className="repository-info">
+          <p>
+            {getHealthMessage()}.
+          </p>
 
-                  <div className="repository-status-dot" />
-
-                  <div>
-                    <strong>
-                      {repository.name}
-                    </strong>
-
-                    <span>
-                      {repository.full_name}
-                    </span>
-                  </div>
-
-                </div>
-
-                <div className="repository-meta">
-
-                  <span
-                    className={
-                      repository.is_active
-                        ? "repository-active"
-                        : "repository-inactive"
-                    }
-                  >
-                    {repository.is_active
-                      ? "Active"
-                      : "Inactive"}
-                  </span>
-
-                  <span className="repository-visibility">
-                    {repository.visibility}
-                  </span>
-
-                </div>
-
-              </div>
-
-            ))}
+          <p>
+            Keep up the good work!
+          </p>
 
         </div>
-      )}
 
-      {!loading &&
-        repositories.length > 5 && (
-          <button className="repository-view-all">
-            View all repositories →
-          </button>
-        )}
+      </div>
+
+      <div className="health-metrics">
+
+        <div className="health-metric">
+
+          <span>
+            Healthy
+          </span>
+
+          <strong>
+            {health.healthy}/{health.repositories.length}
+          </strong>
+
+          <div className="health-progress">
+            <div
+              style={{
+                width: `${score}%`,
+              }}
+            />
+          </div>
+
+        </div>
+
+        <div className="health-metric">
+
+          <span>
+            Needs Attention
+          </span>
+
+          <strong>
+            {health.attention}/{health.repositories.length}
+          </strong>
+
+          <div className="health-progress">
+            <div
+              className="attention-progress"
+              style={{
+                width: `${
+                  health.repositories.length
+                    ? (
+                        health.attention /
+                        health.repositories.length
+                      ) * 100
+                    : 0
+                }%`,
+              }}
+            />
+          </div>
+
+        </div>
+
+        <div className="health-metric">
+
+          <span>
+            Inactive
+          </span>
+
+          <strong>
+            {health.inactive}/{health.repositories.length}
+          </strong>
+
+          <div className="health-progress">
+            <div
+              className="inactive-progress"
+              style={{
+                width: `${
+                  health.repositories.length
+                    ? (
+                        health.inactive /
+                        health.repositories.length
+                      ) * 100
+                    : 0
+                }%`,
+              }}
+            />
+          </div>
+
+        </div>
+
+      </div>
 
     </div>
   );
