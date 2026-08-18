@@ -56,6 +56,7 @@ class RepositoryDashboardView(APIView):
         repository=get_object_or_404(
             Repository,
             id=repository_id,
+            organization=request.user.organization,
         )
 
         data = {
@@ -116,3 +117,40 @@ class RepositoryDashboardView(APIView):
         serializer = RepositoryDashboardSerializer(data)
 
         return Response(serializer.data)
+
+
+class RepositoryCommitsView(APIView):
+
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, repository_id):
+
+        repository = get_object_or_404(
+            Repository,
+            id=repository_id,
+            organization=request.user.organization,
+        )
+
+        commits = Commit.objects.filter(
+            repository=repository
+        ).order_by("-committed_at")
+
+        data = []
+
+        for commit in commits:
+
+            data.append({
+                "id": commit.id,
+                "sha": commit.github_sha,
+                "message": commit.message,
+                "author_name": commit.author_name,
+                "author_email": commit.author_email,
+                "committed_at": commit.committed_at,
+                "html_url": commit.html_url,
+            })
+
+        return Response({
+            "repository": repository.name,
+            "count": len(data),
+            "commits": data,
+        })
