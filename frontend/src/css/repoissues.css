@@ -1,8 +1,8 @@
 /* =========================================
-   REPOSITORY COMMITS PAGE
+   REPOSITORY ISSUES PAGE
 ========================================= */
 
-.repository-commits-page {
+.repository-issues-page {
   padding: 28px 24px 40px;
 }
 
@@ -11,27 +11,30 @@
    BREADCRUMB
 ========================================= */
 
-.repository-breadcrumb {
+.repository-issues-page .repository-breadcrumb {
   display: flex;
   align-items: center;
   gap: 8px;
+
   margin-bottom: 22px;
 
   color: #718096;
   font-size: 14px;
 }
 
-.repository-breadcrumb a {
+.repository-issues-page .repository-breadcrumb a {
   color: #7f9ed6;
+
   text-decoration: none;
+
   transition: 0.2s ease;
 }
 
-.repository-breadcrumb a:hover {
+.repository-issues-page .repository-breadcrumb a:hover {
   color: #5d91ff;
 }
 
-.repository-breadcrumb span:last-child {
+.repository-issues-page .repository-breadcrumb span:last-child {
   color: #c7d2e3;
 }
 
@@ -40,7 +43,7 @@
    PAGE HEADER
 ========================================= */
 
-.repository-commits-header {
+.repository-issues-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -48,33 +51,31 @@
   margin-bottom: 24px;
 }
 
-.repository-commits-header h1 {
+.repository-issues-header h1 {
   margin: 0;
+
+  color: #f5f7fb;
 
   font-size: 30px;
   font-weight: 700;
-  letter-spacing: -0.5px;
 
-  color: #f5f7fb;
+  letter-spacing: -0.5px;
 }
 
-.repository-commits-header p {
+.repository-issues-header p {
   margin: 7px 0 0;
 
   color: #7f8da3;
-  font-size: 16px;
-}
 
-.repository-commits-header strong {
-  color: #b9c8dc;
+  font-size: 16px;
 }
 
 
 /* =========================================
-   COMMIT COUNT
+   ISSUE COUNT
 ========================================= */
 
-.repository-commits-count {
+.repository-issues-count {
   min-width: 105px;
 
   padding: 13px 18px;
@@ -87,30 +88,31 @@
   text-align: center;
 }
 
-.repository-commits-count strong {
+.repository-issues-count strong {
   display: block;
+
+  color: #5d91ff;
 
   font-size: 23px;
   font-weight: 700;
-
-  color: #5d91ff;
 }
 
-.repository-commits-count span {
+.repository-issues-count span {
   display: block;
 
   margin-top: 3px;
 
   color: #718096;
+
   font-size: 11px;
 }
 
 
 /* =========================================
-   MAIN COMMIT CARD
+   MAIN ISSUE CARD
 ========================================= */
 
-.repository-commits-card {
+.repository-issues-card {
   overflow: hidden;
 
   border: 1px solid #18283e;
@@ -127,7 +129,7 @@
    CARD HEADER
 ========================================= */
 
-.repository-commits-card-header {
+.repository-issues-card-header {
   display: flex;
   align-items: center;
 
@@ -136,7 +138,7 @@
   border-bottom: 1px solid #18283e;
 }
 
-.repository-commits-card-header h2 {
+.repository-issues-card-header h2 {
   margin: 0;
 
   color: #e8edf5;
@@ -145,7 +147,7 @@
   font-weight: 650;
 }
 
-.repository-commits-card-header p {
+.repository-issues-card-header p {
   margin: 5px 0 0;
 
   color: #718096;
@@ -155,19 +157,19 @@
 
 
 /* =========================================
-   COMMIT LIST
+   ISSUE LIST
 ========================================= */
 
-.repository-commit-list {
+.repository-issue-list {
   width: 100%;
 }
 
 
 /* =========================================
-   COMMIT ROW
+   ISSUE ROW
 ========================================= */
 
-.repository-commit-row {
+.repository-issue-row {
   display: flex;
   align-items: center;
 
@@ -184,11 +186,11 @@
     border-color 0.2s ease;
 }
 
-.repository-commit-row:last-child {
+.repository-issue-row:last-child {
   border-bottom: none;
 }
 
-.repository-commit-row:hover {
+.repository-issue-row:hover {
   background: #0c192b;
 
   border-color: #1c3150;
@@ -196,10 +198,10 @@
 
 
 /* =========================================
-   COMMIT ICON
+   ISSUE ICON
 ========================================= */
 
-.repository-commit-icon {
+.repository-issue-icon {
   flex-shrink: 0;
 
   width: 34px;
@@ -209,28 +211,46 @@
   align-items: center;
   justify-content: center;
 
-  border: 1px solid #234477;
   border-radius: 50%;
-
-  background: #10264a;
-
-  color: #5d91ff;
 
   font-size: 14px;
   font-weight: 700;
 }
 
 
+/* Open */
+
+.repository-issue-icon.open {
+  border: 1px solid #8b6630;
+
+  background: #2c2415;
+
+  color: #f0b84b;
+}
+
+
+/* Closed */
+
+.repository-issue-icon.closed {
+  border: 1px solid #285a4b;
+
+  background: #102c25;
+
+  color: #35d9a0;
+}
+
+
 /* =========================================
-   COMMIT MAIN CONTENT
+   MAIN ISSUE CONTENT
 ========================================= */
 
-.repository-commit-main {
+.repository-issue-main {
   flex: 1;
+
   min-width: 0;
 }
 
-.repository-commit-main h3 {
+.repository-issue-main h3 {
   margin: 0;
 
   color: #dce5f2;
@@ -245,9 +265,10 @@
   text-overflow: ellipsis;
 }
 
-.repository-commit-meta {
+.repository-issue-meta {
   display: flex;
   align-items: center;
+
   gap: 7px;
 
   margin-top: 7px;
@@ -257,44 +278,62 @@
   font-size: 11px;
 }
 
-.repository-commit-meta span:first-child {
+.repository-issue-meta span:first-child {
   color: #9eacc0;
 }
 
 
 /* =========================================
-   COMMIT SHA
+   ISSUE STATE
 ========================================= */
 
-.repository-commit-sha {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-
+.repository-issue-state {
   flex-shrink: 0;
-}
 
-.repository-commit-sha span {
-  padding: 5px 8px;
+  padding: 5px 9px;
 
-  border: 1px solid #1b2b43;
   border-radius: 6px;
 
-  background: #07101f;
-
-  color: #8494aa;
-
-  font-family: monospace;
-  font-size: 11px;
+  font-size: 10px;
+  font-weight: 600;
 }
 
-.repository-commit-sha a {
+
+/* Open */
+
+.repository-issue-state.open {
+  border: 1px solid #8b6630;
+
+  background: #2c2415;
+
+  color: #f0b84b;
+}
+
+
+/* Closed */
+
+.repository-issue-state.closed {
+  border: 1px solid #285a4b;
+
+  background: #102c25;
+
+  color: #35d9a0;
+}
+
+
+/* =========================================
+   GITHUB LINK
+========================================= */
+
+.repository-issue-link {
   width: 27px;
   height: 27px;
 
   display: flex;
   align-items: center;
   justify-content: center;
+
+  flex-shrink: 0;
 
   border: 1px solid #1b2b43;
   border-radius: 6px;
@@ -308,7 +347,7 @@
   transition: 0.2s ease;
 }
 
-.repository-commit-sha a:hover {
+.repository-issue-link:hover {
   border-color: #3267ed;
 
   background: #10264a;
@@ -321,7 +360,7 @@
    EMPTY STATE
 ========================================= */
 
-.repository-commit-list .repositories-empty {
+.repository-issue-list .repositories-empty {
   padding: 55px 20px;
 
   text-align: center;
@@ -336,7 +375,7 @@
    LOADING
 ========================================= */
 
-.repository-commits-page .dashboard-loading {
+.repository-issues-page .dashboard-loading {
   padding: 40px;
 
   text-align: center;
@@ -353,20 +392,21 @@
 
 @media (max-width: 800px) {
 
-  .repository-commits-page {
+  .repository-issues-page {
     padding: 22px 16px 35px;
   }
 
-  .repository-commits-header {
+  .repository-issues-header {
     align-items: flex-start;
+
     gap: 20px;
   }
 
-  .repository-commits-header h1 {
+  .repository-issues-header h1 {
     font-size: 26px;
   }
 
-  .repository-commit-row {
+  .repository-issue-row {
     padding: 14px 16px;
   }
 
@@ -375,30 +415,39 @@
 
 @media (max-width: 600px) {
 
-  .repository-commits-header {
+  .repository-issues-header {
     flex-direction: column;
   }
 
-  .repository-commits-count {
+  .repository-issues-count {
     width: 100%;
+
     box-sizing: border-box;
   }
 
-  .repository-commit-row {
+  .repository-issue-row {
     align-items: flex-start;
   }
 
-  .repository-commit-icon {
+  .repository-issue-icon {
     width: 30px;
     height: 30px;
   }
 
-  .repository-commit-sha {
+  .repository-issue-state {
     display: none;
   }
 
-  .repository-commit-main h3 {
+  .repository-issue-link {
+    display: none;
+  }
+
+  .repository-issue-main h3 {
     white-space: normal;
+  }
+
+  .repository-issue-meta {
+    flex-wrap: wrap;
   }
 
 }

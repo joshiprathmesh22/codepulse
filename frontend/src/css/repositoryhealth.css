@@ -1,294 +1,374 @@
+/* =========================================
+   REPOSITORY HEALTH CARD
+========================================= */
+
 .repository-health-card {
-  margin-top: 20px;
-  padding: 20px;
-  border: 1px solid #18283e;
-  border-radius: 11px;
-  background: #091321;
   min-width: 0;
+  padding: 22px;
+  margin-top: 20px;
+  border: 1px solid #18283e;
+  border-radius: 12px;
+
+  background: #091321;
+
+  box-sizing: border-box;
 }
+
+
+/* =========================================
+   HEADER
+========================================= */
+
 .repository-health-header {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
+  margin-bottom: 20px;
 }
 
 .repository-health-header h2 {
- margin: 0;
-  font-size: 15px;
-  font-weight: 600;
+  margin: 0;
+  color: #e8edf5;
+  font-size: 17px;
+  font-weight: 650;
 }
 
 .repository-health-header p {
-  margin: 6px 0 0;
-  color: #738197;
-  font-size: 12px;
-}
-
-.repository-health-percentage {
-  font-size: 22px;
-  font-weight: 700;
-  color: #5d91ff;
-}
-
-.repository-health-summary {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-  margin-top: 22px;
-}
-
-.health-summary-item {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  padding: 10px;
-  border: 1px solid #18283e;
-  border-radius: 8px;
-  background: #07101f;
-}
-
-.health-summary-item strong,
-.health-summary-item span {
-  display: block;
-}
-
-.health-summary-item strong {
-  font-size: 16px;
-  color: #f5f7fb;
-}
-
-.health-summary-item div span {
-  margin-top: 3px;
+  margin: 5px 0 0;
   color: #718096;
-  font-size: 10px;
+  font-size: 14px;
 }
-
-.health-dot {
-  width: 8px;
-  height: 8px;
-  flex-shrink: 0;
-  border-radius: 50%;
-  display: inline-block;
-}
-
-.health-dot.healthy {
-  background: #16d995;
-}
-
-.health-dot.attention {
-  background: #f5a623;
-}
-
-.health-dot.inactive {
-  background: #718096;
-}
-
-.repository-health-list {
-  margin-top: 18px;
-  border-top: 1px solid #18283e;
-}
-
-.repository-health-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 12px 2px;
-  border-bottom: 1px solid #142236;
-}
-
-.repository-health-name {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  color: #d8e0eb;
-  font-size: 13px;
-}
-
-.repository-health-status {
-  color: #718096;
-  font-size: 11px;
-}
-
-@media (max-width: 600px) {
-  .repository-health-summary {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* ================================
-   Repository Health
-================================ */
-
 
 .repository-health-view {
-  margin-top: 26px;
-  border: none;
+  padding: 5px 9px;
+  border: 1px solid #1b2b43;
+  border-radius: 6px;
   background: transparent;
-
-  color: #5d91ff;
-
-  font-size: 10px;
-
+  color: #6f91c9;
+  font-size: 14px;
   cursor: pointer;
+  transition: 0.2s ease;
 }
 
 .repository-health-view:hover {
-  color: #8aadff;
+  border-color: #3267ed;
+
+  background: #10264a;
+
+  color: #7fa7ff;
 }
 
-/* Main */
 
-.repository-health-main {
+/* =========================================
+   SCORE SECTION
+========================================= */
+
+.repository-health-score-section {
   display: flex;
   align-items: center;
-
-  gap: 15px;
-
-  margin-top: 20px;
-  
+  gap: 18px;
+  margin-bottom: 22px;
 }
 
-/* Circle */
 
-.health-circle {
-  width: 90px;
-  height: 90px;
+/* =========================================
+   SCORE CIRCLE
+========================================= */
+
+.repository-health-score-circle {
+  position: relative;
+
+  width: 86px;
+  height: 86px;
 
   flex-shrink: 0;
 
-  border-radius: 50%;
-
   display: flex;
+  flex-direction: column;
+
   align-items: center;
   justify-content: center;
 
-  background:
-    conic-gradient(
-      #21d995 var(--health-progress),
-      #26384d var(--health-progress)
-    );
+  border-radius: 50%;
 
-  position: relative;
+  background:
+    radial-gradient(
+      circle,
+      #091321 55%,
+      transparent 57%
+    );
 }
 
-.health-circle::before {
+.repository-health-score-circle::before {
   content: "";
 
   position: absolute;
 
-  width: 72px;
-  height: 72px;
+  inset: 0;
 
   border-radius: 50%;
 
-  background: #091321;
+  border: 5px solid #18283e;
+
+  box-sizing: border-box;
 }
 
-.health-circle-inner {
+.repository-health-score-circle.score-good::before {
+  border-color: #16d995;
+}
+
+.repository-health-score-circle.score-warning::before {
+  border-color: #f0b84b;
+}
+
+.repository-health-score-circle.score-danger::before {
+  border-color: #ef6675;
+}
+
+
+.repository-health-score {
   position: relative;
-
-  display: flex;
-  align-items: baseline;
-
   z-index: 1;
-}
 
-.health-circle-inner strong {
-  color: #f5f7fb;
+  color: #f4f7fb;
 
   font-size: 24px;
-  font-weight: 600;
+  font-weight: 700;
+
+  line-height: 1;
 }
 
-.health-circle-inner span {
-  margin-left: 2px;
+.repository-health-score-label {
+  position: relative;
+  z-index: 1;
 
-  color: #738197;
+  margin-top: 3px;
 
-  font-size: 9px;
+  color: #718096;
+
+  font-size: 10px;
 }
 
-/* Health text */
 
-.health-overview {
+/* =========================================
+   STATUS
+========================================= */
+
+.repository-health-status {
   min-width: 0;
-  margin-left: 10px;
 }
 
-.health-overview h3 {
-  margin: 0;
+.repository-health-status-badge {
+  display: inline-flex;
+  align-items: center;
 
-  color: #16d995;
+  gap: 7px;
 
-  font-size: 18px;
+  padding: 6px 9px;
+
+  border-radius: 6px;
+
+  font-size: 13px;
   font-weight: 600;
 }
 
-.health-overview p {
-  margin: 5px 0 0;
+.repository-health-status-dot {
+  width: 6px;
+  height: 6px;
 
-  color: #9aa8bc;
-
-  font-size: 14px;
-  line-height: 1.4;
+  border-radius: 50%;
 }
 
-/* Metrics */
+.health-good {
+  background: #0d2b25;
+  color: #35e2a5;
+}
 
-.health-metrics {
-  margin-top: 80px;
+.health-good .repository-health-status-dot {
+  background: #16d995;
+}
+
+.health-warning {
+  background: #2c2514;
+  color: #f0bd58;
+}
+
+.health-warning .repository-health-status-dot {
+  background: #f0b84b;
+}
+
+.health-danger {
+  background: #301820;
+  color: #ef7180;
+}
+
+.health-danger .repository-health-status-dot {
+  background: #ef6675;
+}
+
+.repository-health-status p {
+  margin: 8px 0 0;
+
+  color: #718096;
+
+  font-size: 13px;
+
+  line-height: 1.5;
+}
+
+
+/* =========================================
+   HEALTH METRICS
+========================================= */
+
+.repository-health-metrics {
+  display: flex;
+  flex-direction: column;
+
+  gap: 15px;
+
+  padding-top: 18px;
+
+  border-top: 1px solid #17263b;
 }
 
 .health-metric {
-  display: grid;
+  width: 100%;
+}
 
-  grid-template-columns: 1fr auto 80px;
-
+.health-metric-top {
+  display: flex;
   align-items: center;
+  justify-content: space-between;
 
-  gap: 8px;
-
-  margin-bottom: 9px;
+  margin-bottom: 7px;
 }
 
-.health-metric span {
-  color: #c4cedb;
-  margin-top: 10px;
-  font-size: 15px;
+.health-metric-top span {
+  color: #8b99ad;
+
+  font-size: 13px;
 }
 
-.health-metric strong {
-  color: #aeb9c8;
+.health-metric-top strong {
+  color: #cbd6e5;
 
-  font-size: 9px;
-
-  font-weight: 500;
+  font-size: 12px;
+  font-weight: 600;
 }
+
+
+/* =========================================
+   PROGRESS BAR
+========================================= */
 
 .health-progress {
-  height: 3px;
+  width: 100%;
+  height: 5px;
 
   overflow: hidden;
 
   border-radius: 10px;
 
-  background: #1d2b3d;
+  background: #162238;
 }
 
-.health-progress div {
+.health-progress-fill {
   height: 100%;
 
-  border-radius: 10px;
+  border-radius: inherit;
 
-  background: #20d995;
+  background: #3975ff;
 
-  transition: width 0.3s ease;
+  transition: width 0.5s ease;
 }
 
-.health-progress .attention-progress {
-  background: #f0ad4e;
+
+/* =========================================
+   SUMMARY
+========================================= */
+
+.repository-health-summary {
+  display: grid;
+
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+
+  gap: 8px;
+
+  margin-top: 20px;
+
+  padding-top: 17px;
+
+  border-top: 1px solid #17263b;
 }
 
-.health-progress .inactive-progress {
-  background: #66758a;
+.health-summary-item {
+  display: flex;
+  align-items: center;
+
+  gap: 6px;
+
+  color: #718096;
+
+  font-size: 13px;
+}
+
+.health-summary-item strong {
+  margin-left: auto;
+
+  color: #d7e0ed;
+
+  font-size: 13px;
+}
+
+.health-summary-dot {
+  width: 6px;
+  height: 6px;
+
+  flex-shrink: 0;
+
+  border-radius: 50%;
+}
+
+.health-summary-dot.healthy {
+  background: #16d995;
+}
+
+.health-summary-dot.attention {
+  background: #f0b84b;
+}
+
+.health-summary-dot.inactive {
+  background: #6f7c90;
+}
+
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 600px) {
+
+  .repository-health-card {
+    padding: 18px;
+  }
+
+  .repository-health-score-section {
+    gap: 14px;
+  }
+
+  .repository-health-score-circle {
+    width: 75px;
+    height: 75px;
+  }
+
+  .repository-health-score {
+    font-size: 21px;
+  }
+
+  .repository-health-summary {
+    grid-template-columns: 1fr;
+  }
+
 }

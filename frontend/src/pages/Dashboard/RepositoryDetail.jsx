@@ -327,18 +327,16 @@ function RepositoryDetail() {
               Commits
               </Link>
 
-              <Link to={`/dashboard/branches?repository=${id}`}>
-                Branches
+              <Link to={`/dashboard/repositories/${id}/branches`}>
+              Branches
               </Link>
 
-              <Link to={`/dashboard/pull-requests?repository=${id}`}>
-                Pull Requests
+              <Link to={`/dashboard/repositories/${id}/pull-requests`}>
+              Pull Requests
               </Link>
-
-              <Link to={`/dashboard/issues?repository=${id}`}>
-                Issues
+ <Link to={`/dashboard/repositories/${id}/issues`}>
+              Issues
               </Link>
-
             </div>
 
           </div>

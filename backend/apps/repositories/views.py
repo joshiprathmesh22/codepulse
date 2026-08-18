@@ -154,3 +154,121 @@ class RepositoryCommitsView(APIView):
             "count": len(data),
             "commits": data,
         })
+class RepositoryBranchesView(APIView):
+
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, repository_id):
+
+        repository = get_object_or_404(
+            Repository,
+            id=repository_id,
+            organization=request.user.organization,
+        )
+
+        branches = Branch.objects.filter(
+            repository=repository
+        ).order_by(
+            "-is_default",
+            "name",
+        )
+
+        data = []
+
+        for branch in branches:
+
+            data.append(
+                {
+                    "id": branch.id,
+                    "name": branch.name,
+                    "is_default": branch.is_default,
+                }
+            )
+
+        return Response(
+            {
+                "repository": repository.name,
+                "count": len(data),
+                "branches": data,
+            }
+        )
+
+class RepositoryPullRequestsView(APIView):
+
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, repository_id):
+
+        repository = get_object_or_404(
+            Repository,
+            id=repository_id,
+            organization=request.user.organization,
+        )
+
+        pull_requests = PullRequest.objects.filter(
+            repository=repository
+        ).order_by("-created_at")
+
+        data = []
+
+        for pull_request in pull_requests:
+
+            data.append(
+                {
+                    "id": pull_request.id,
+                    "github_id": pull_request.github_id,
+                    "title": pull_request.title,
+                    "state": pull_request.state,
+                    "author": pull_request.author,
+                    "created_at": pull_request.created_at,
+                    "merged": pull_request.merged,
+                    "html_url": pull_request.html_url,
+                }
+            )
+
+        return Response(
+            {
+                "repository": repository.name,
+                "count": len(data),
+                "pull_requests": data,
+            }
+        )
+class RepositoryIssuesView(APIView):
+
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, repository_id):
+
+        repository = get_object_or_404(
+            Repository,
+            id=repository_id,
+            organization=request.user.organization,
+        )
+
+        issues = Issue.objects.filter(
+            repository=repository
+        ).order_by("-created_at")
+
+        data = []
+
+        for issue in issues:
+
+            data.append(
+                {
+                    "id": issue.id,
+                    "github_id": issue.github_id,
+                    "title": issue.title,
+                    "state": issue.state,
+                    "author": issue.author,
+                    "created_at": issue.created_at,
+                    "html_url": issue.html_url,
+                }
+            )
+
+        return Response(
+            {
+                "repository": repository.name,
+                "count": len(data),
+                "issues": data,
+            }
+        )

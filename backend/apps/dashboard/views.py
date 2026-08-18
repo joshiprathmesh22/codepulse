@@ -1,7 +1,7 @@
 from datetime import timedelta
 
 from django.utils import timezone
-from django.db.models import Count
+from django.db.models import Count, Q
 from django.db.models.functions import TruncDate
 
 from rest_framework.permissions import IsAuthenticated
@@ -24,60 +24,14 @@ class DashboardOverviewView(APIView):
 
         organization = request.user.organization
 
+        # =========================================
+        # ORGANIZATION DATA
+        # =========================================
+
         repositories = Repository.objects.filter(
             organization=organization
         )
-        health_data=[]
 
-        for repository in repositories:
-
-            total_commits=Commit.objects.filter(
-                repository=repository,
-            ).count()
-
-            if not repository.is_active:
-                status="inactive"
-
-            elif total_commits > 0:
-                status="healthy"
-
-            else:
-                status= "attention"
-
-            health_data.append(
-                {
-                    "id": repository.id,
-                    "name": repository.name,
-                    "status": status,
-                    "total_commits": total_commits,
-                }
-            )
-        total_repositories=len(health_data)
-
-        healthy_repositories = sum(
-            1
-            for repository in health_data
-            if repository["status"] == "healthy"
-        )
-
-        attention_repositories = sum(
-            1
-            for repository in health_data
-            if repository["status"]=="attention"
-        )
-
-        inactive_repositories = sum(
-            1
-            for repository in health_data
-            if repository["status"] == "inactive"
-        )
-        health_score=(
-            round(
-                (healthy_repositories/total_repositories)*100
-            )
-            if total_repositories > 0
-            else 0
-        )
         commits = Commit.objects.filter(
             repository__organization=organization
         )
@@ -94,16 +48,249 @@ class DashboardOverviewView(APIView):
             repository__organization=organization
         )
 
-        # -----------------------------
-        # Dates - last 7 days
-        # -----------------------------
+        # =========================================
+        # REPOSITORY HEALTH
+        # =========================================
+
+        health_data = []
+
+        for repository in repositories:
+
+            total_commits = Commit.objects.filter(
+                repository=repository
+            ).count()
+
+            total_branches = Branch.objects.filter(
+                repository=repository
+            ).count()
+
+            total_pull_requests = PullRequest.objects.filter(
+                repository=repository
+            ).count()
+
+            open_issues = Issue.objects.filter(
+                repository=repository,
+                state="open",
+            ).count()
+
+            closed_issues = Issue.objects.filter(
+                repository=repository,
+                state="closed",
+            ).count()
+
+            # -----------------------------------------
+            # Repository Status
+            # -----------------------------------------
+
+            if not repository.is_active:
+
+                repository_status = "inactive"
+
+            elif total_commits > 0:
+
+                repository_status = "healthy"
+
+            else:
+
+                repository_status = "attention"
+
+            # -----------------------------------------
+            # Code Quality
+            # -----------------------------------------
+            #
+            # Currently activity based.
+            # Later we can replace this with
+            # real static code analysis.
+            #
+
+            if total_commits >= 20:
+
+                code_quality = 90
+
+            elif total_commits >= 10:
+
+                code_quality = 80
+
+            elif total_commits >= 5:
+
+                code_quality = 70
+
+            elif total_commits > 0:
+
+                code_quality = 60
+
+            else:
+
+                code_quality = 40
+
+            # -----------------------------------------
+            # Security
+            # -----------------------------------------
+            #
+            # Currently based on open issues.
+            # Later this can become a real
+            # security scanning system.
+            #
+
+            if open_issues == 0:
+
+                security = 90
+
+            elif open_issues <= 2:
+
+                security = 75
+
+            elif open_issues <= 5:
+
+                security = 60
+
+            else:
+
+                security = 40
+
+            # -----------------------------------------
+            # Maintainability
+            # -----------------------------------------
+
+            maintainability = 80
+
+            if total_commits == 0:
+
+                maintainability -= 25
+
+            if total_branches == 0:
+
+                maintainability -= 10
+
+            if open_issues >= 5:
+
+                maintainability -= 15
+
+            if total_pull_requests > 0:
+
+                maintainability += 5
+
+            # Keep score between 0 and 100
+
+            maintainability = max(
+                0,
+                min(
+                    100,
+                    maintainability
+                )
+            )
+
+            # -----------------------------------------
+            # Repository Health Score
+            # -----------------------------------------
+
+            repository_score = round(
+                (
+                    code_quality
+                    + security
+                    + maintainability
+                ) / 3
+            )
+
+            health_data.append(
+                {
+                    "id": repository.id,
+
+                    "name": repository.name,
+
+                    "status": repository_status,
+
+                    "total_commits": total_commits,
+
+                    "total_branches": total_branches,
+
+                    "total_pull_requests": total_pull_requests,
+
+                    "open_issues": open_issues,
+
+                    "closed_issues": closed_issues,
+
+                    "code_quality": code_quality,
+
+                    "security": security,
+
+                    "maintainability": maintainability,
+
+                    "health_score": repository_score,
+                }
+            )
+
+        # =========================================
+        # ORGANIZATION HEALTH SUMMARY
+        # =========================================
+
+        total_repositories = len(
+            health_data
+        )
+
+        healthy_repositories = sum(
+            1
+            for repository in health_data
+            if repository["status"] == "healthy"
+        )
+
+        attention_repositories = sum(
+            1
+            for repository in health_data
+            if repository["status"] == "attention"
+        )
+
+        inactive_repositories = sum(
+            1
+            for repository in health_data
+            if repository["status"] == "inactive"
+        )
+
+        # -----------------------------------------
+        # Overall Health Score
+        # -----------------------------------------
+
+        health_score = (
+            round(
+                sum(
+                    repository["health_score"]
+                    for repository in health_data
+                )
+                / total_repositories
+            )
+            if total_repositories > 0
+            else 0
+        )
+
+        # -----------------------------------------
+        # Overall Health Status
+        # -----------------------------------------
+
+        if health_score >= 80:
+
+            health_status = "Good Health"
+
+        elif health_score >= 60:
+
+            health_status = "Needs Attention"
+
+        else:
+
+            health_status = "Poor Health"
+
+        # =========================================
+        # DATE RANGE - LAST 7 DAYS
+        # =========================================
 
         today = timezone.localdate()
-        start_date = today - timedelta(days=6)
 
-        # -----------------------------
-        # Commit Activity - last 7 days
-        # -----------------------------
+        start_date = today - timedelta(
+            days=6
+        )
+
+        # =========================================
+        # COMMIT ACTIVITY
+        # =========================================
 
         commit_activity = (
             commits
@@ -112,13 +299,19 @@ class DashboardOverviewView(APIView):
                 committed_at__date__lte=today,
             )
             .annotate(
-                date=TruncDate("committed_at")
+                date=TruncDate(
+                    "committed_at"
+                )
             )
-            .values("date")
+            .values(
+                "date"
+            )
             .annotate(
                 count=Count("id")
             )
-            .order_by("date")
+            .order_by(
+                "date"
+            )
         )
 
         activity_map = {
@@ -130,11 +323,14 @@ class DashboardOverviewView(APIView):
 
         for i in range(7):
 
-            date = start_date + timedelta(days=i)
+            date = start_date + timedelta(
+                days=i
+            )
 
             commit_activity_data.append(
                 {
                     "date": date.isoformat(),
+
                     "count": activity_map.get(
                         date.isoformat(),
                         0,
@@ -142,9 +338,9 @@ class DashboardOverviewView(APIView):
                 }
             )
 
-        # -----------------------------
-        # Pull Request Trends
-        # -----------------------------
+        # =========================================
+        # PULL REQUEST TRENDS
+        # =========================================
 
         pull_request_activity = (
             pull_requests
@@ -153,27 +349,33 @@ class DashboardOverviewView(APIView):
                 created_at__date__lte=today,
             )
             .annotate(
-                date=TruncDate("created_at")
+                date=TruncDate(
+                    "created_at"
+                )
             )
-            .values("date")
+            .values(
+                "date"
+            )
             .annotate(
                 total=Count("id"),
+
                 merged=Count(
                     "id",
-                    filter=__import__(
-                        "django.db.models",
-                        fromlist=["Q"]
-                    ).Q(merged=True),
+                    filter=Q(
+                        merged=True
+                    ),
                 ),
+
                 closed=Count(
                     "id",
-                    filter=__import__(
-                        "django.db.models",
-                        fromlist=["Q"]
-                    ).Q(state="closed"),
+                    filter=Q(
+                        state="closed"
+                    ),
                 ),
             )
-            .order_by("date")
+            .order_by(
+                "date"
+            )
         )
 
         pull_request_map = {
@@ -189,7 +391,9 @@ class DashboardOverviewView(APIView):
 
         for i in range(7):
 
-            date = start_date + timedelta(days=i)
+            date = start_date + timedelta(
+                days=i
+            )
 
             data = pull_request_map.get(
                 date.isoformat(),
@@ -203,18 +407,25 @@ class DashboardOverviewView(APIView):
             pull_request_activity_data.append(
                 {
                     "date": date.isoformat(),
+
                     "opened": data["opened"],
+
                     "merged": data["merged"],
+
                     "closed": data["closed"],
                 }
             )
 
-        # -----------------------------
-        # Dashboard Response
-        # -----------------------------
+        # =========================================
+        # DASHBOARD RESPONSE
+        # =========================================
 
         return Response(
             {
+                # ---------------------------------
+                # Summary
+                # ---------------------------------
+
                 "repositories": repositories.count(),
 
                 "active_repositories": repositories.filter(
@@ -229,11 +440,29 @@ class DashboardOverviewView(APIView):
 
                 "issues": issues.count(),
 
+                # ---------------------------------
+                # Commit Activity
+                # ---------------------------------
+
                 "commit_activity": commit_activity_data,
-            
-                "pull_request_activity": pull_request_activity_data,
+
+                # ---------------------------------
+                # Pull Request Activity
+                # ---------------------------------
+
+                "pull_request_activity": (
+                    pull_request_activity_data
+                ),
+
+                # ---------------------------------
+                # Repository Health
+                # ---------------------------------
+
                 "repository_health": {
+
                     "score": health_score,
+
+                    "status": health_status,
 
                     "healthy": healthy_repositories,
 

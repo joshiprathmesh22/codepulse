@@ -4,6 +4,9 @@ from .views import ( RepositoryListCreateView,
 RepositoryDetailView,
 RepositoryDashboardView,
 RepositoryCommitsView,
+RepositoryBranchesView,
+RepositoryPullRequestsView,
+RepositoryIssuesView,
 )
 urlpatterns = [
     path(
@@ -27,5 +30,20 @@ urlpatterns = [
     "<int:repository_id>/commits/",
     RepositoryCommitsView.as_view(),
     name="repository-commits",
+),
+path(
+    "<int:repository_id>/branches/",
+    RepositoryBranchesView.as_view(),
+    name="repository-branches",
+),
+path(
+    "<int:repository_id>/pull-requests/",
+    RepositoryPullRequestsView.as_view(),
+    name="repository-pull-requests",
+),
+path(
+    "<int:repository_id>/issues/",
+    RepositoryIssuesView.as_view(),
+    name="repository-issues",
 ),
 ]
