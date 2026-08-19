@@ -7,6 +7,7 @@ RepositoryCommitsView,
 RepositoryBranchesView,
 RepositoryPullRequestsView,
 RepositoryIssuesView,
+AllCommitsView,
 )
 urlpatterns = [
     path(
@@ -45,5 +46,10 @@ path(
     "<int:repository_id>/issues/",
     RepositoryIssuesView.as_view(),
     name="repository-issues",
+),
+path(
+    "all-commits/",
+    AllCommitsView.as_view(),
+    name="all-commits",
 ),
 ]

@@ -272,3 +272,42 @@ class RepositoryIssuesView(APIView):
                 "issues": data,
             }
         )
+
+class AllCommitsView(APIView):
+
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+
+        organization = request.user.organization
+
+        commits = (
+            Commit.objects
+            .filter(repository__organization=organization)
+            .select_related("repository")
+            .order_by("-committed_at")
+        )
+
+        data = []
+
+        for commit in commits:
+
+            data.append({
+                "id": commit.id,
+                "sha": commit.github_sha,
+                "message": commit.message,
+                "author_name": commit.author_name,
+                "author_email": commit.author_email,
+                "committed_at": commit.committed_at,
+                "html_url": commit.html_url,
+                "repository": {
+                    "id": commit.repository.id,
+                    "name": commit.repository.name,
+                    "full_name": commit.repository.full_name,
+                },
+            })
+
+        return Response({
+            "count": len(data),
+            "commits": data,
+        })

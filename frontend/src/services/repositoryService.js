@@ -90,11 +90,28 @@ export const getRepositoryPullRequests = async (repositoryId) => {
 
   return response.data;
 };
+
 export const getRepositoryIssues  = async (repositoryId) => {
   const token = localStorage.getItem("access");
 
   const response = await api.get(
     `/repositories/${repositoryId}/issues/`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  return response.data;
+};
+
+
+export const getAllCommits  = async (repositoryId) => {
+  const token = localStorage.getItem("access");
+
+  const response = await api.get(
+    "/repositories/all-commits/",
     {
       headers: {
         Authorization: `Bearer ${token}`,
