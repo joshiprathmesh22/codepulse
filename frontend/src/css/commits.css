@@ -104,7 +104,7 @@
 
   color: #718096;
 
-  font-size: 11px;
+  font-size: 13px;
 }
 
 
@@ -149,219 +149,6 @@
 
 .commits-card-header p {
   margin: 5px 0 0;
-
-  color: #718096;
-
-  font-size: 12px;
-}
-
-
-/* =========================================
-   COMMIT LIST
-========================================= */
-
-.commit-list {
-  width: 100%;
-}
-
-
-/* =========================================
-   COMMIT ROW
-========================================= */
-
-.commit-row {
-  display: flex;
-  align-items: center;
-
-  gap: 15px;
-
-  min-height: 92px;
-
-  padding: 16px 22px;
-
-  border-bottom: 1px solid #142338;
-
-  transition:
-    background 0.2s ease,
-    border-color 0.2s ease;
-}
-
-.commit-row:last-child {
-  border-bottom: none;
-}
-
-.commit-row:hover {
-  background: #0c192b;
-
-  border-color: #1c3150;
-}
-
-
-/* =========================================
-   COMMIT ICON
-========================================= */
-
-.commit-icon {
-  flex-shrink: 0;
-
-  width: 35px;
-  height: 35px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  border: 1px solid #234477;
-  border-radius: 50%;
-
-  background: #10264a;
-
-  color: #5d91ff;
-
-  font-size: 14px;
-  font-weight: 700;
-}
-
-
-/* =========================================
-   MAIN COMMIT CONTENT
-========================================= */
-
-.commit-main {
-  flex: 1;
-
-  min-width: 0;
-}
-
-.commit-main h3 {
-  margin: 0;
-
-  color: #dce5f2;
-
-  font-size: 14px;
-  font-weight: 600;
-
-  line-height: 1.5;
-
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.commit-meta {
-  display: flex;
-  align-items: center;
-
-  gap: 7px;
-
-  margin-top: 7px;
-
-  color: #718096;
-
-  font-size: 11px;
-}
-
-.commit-meta span:first-child {
-  color: #9eacc0;
-}
-
-
-/* =========================================
-   REPOSITORY
-========================================= */
-
-.commit-repository {
-  display: flex;
-  align-items: center;
-
-  gap: 7px;
-
-  margin-top: 7px;
-
-  font-size: 11px;
-}
-
-.commit-repository span {
-  color: #596a80;
-}
-
-.commit-repository a {
-  color: #7f9ed6;
-
-  text-decoration: none;
-
-  transition: 0.2s ease;
-}
-
-.commit-repository a:hover {
-  color: #6fa0ff;
-}
-
-
-/* =========================================
-   COMMIT SHA
-========================================= */
-
-.commit-sha {
-  display: flex;
-  align-items: center;
-
-  gap: 8px;
-
-  flex-shrink: 0;
-}
-
-.commit-sha span {
-  padding: 5px 8px;
-
-  border: 1px solid #1b2b43;
-  border-radius: 6px;
-
-  background: #07101f;
-
-  color: #8494aa;
-
-  font-family: monospace;
-  font-size: 11px;
-}
-
-.commit-sha a {
-  width: 27px;
-  height: 27px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  border: 1px solid #1b2b43;
-  border-radius: 6px;
-
-  background: #091626;
-
-  color: #718096;
-
-  text-decoration: none;
-
-  transition: 0.2s ease;
-}
-
-.commit-sha a:hover {
-  border-color: #3267ed;
-
-  background: #10264a;
-
-  color: #6fa0ff;
-}
-
-
-/* =========================================
-   EMPTY STATE
-========================================= */
-
-.commit-list .repositories-empty {
-  padding: 55px 20px;
-
-  text-align: center;
 
   color: #718096;
 
@@ -370,240 +157,6 @@
 
 
 /* =========================================
-   LOADING
-========================================= */
-
-.commits-page .dashboard-loading {
-  padding: 40px;
-
-  text-align: center;
-
-  color: #8492a7;
-
-  font-size: 14px;
-}
-
-
-/* =========================================
-   RESPONSIVE
-========================================= */
-
-@media (max-width: 800px) {
-
-  .commits-page {
-    padding: 22px 16px 35px;
-  }
-
-  .commits-header {
-    align-items: flex-start;
-
-    gap: 20px;
-  }
-
-  .commits-header h1 {
-    font-size: 26px;
-  }
-
-  .commit-row {
-    padding: 14px 16px;
-  }
-
-}
-
-
-@media (max-width: 600px) {
-
-  .commits-header {
-    flex-direction: column;
-  }
-
-  .commits-count {
-    width: 100%;
-
-    box-sizing: border-box;
-  }
-
-  .commit-row {
-    align-items: flex-start;
-  }
-
-  .commit-icon {
-    width: 30px;
-    height: 30px;
-  }
-
-  .commit-sha {
-    display: none;
-  }
-
-  .commit-main h3 {
-    white-space: normal;
-  }
-
-  .commit-meta,
-  .commit-repository {
-    flex-wrap: wrap;
-  }
-
-}/* =========================================
-   GLOBAL COMMITS PAGE
-========================================= */
-
-.commits-page {
-  padding: 28px 24px 40px;
-}
-
-
-/* =========================================
-   BREADCRUMB
-========================================= */
-
-.commits-breadcrumb {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-
-  margin-bottom: 22px;
-
-  color: #718096;
-  font-size: 14px;
-}
-
-.commits-breadcrumb a {
-  color: #7f9ed6;
-
-  text-decoration: none;
-
-  transition: 0.2s ease;
-}
-
-.commits-breadcrumb a:hover {
-  color: #5d91ff;
-}
-
-.commits-breadcrumb span:last-child {
-  color: #c7d2e3;
-}
-
-
-/* =========================================
-   PAGE HEADER
-========================================= */
-
-.commits-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  margin-bottom: 24px;
-}
-
-.commits-header h1 {
-  margin: 0;
-
-  color: #f5f7fb;
-
-  font-size: 30px;
-  font-weight: 700;
-
-  letter-spacing: -0.5px;
-}
-
-.commits-header p {
-  margin: 7px 0 0;
-
-  color: #7f8da3;
-
-  font-size: 16px;
-}
-
-
-/* =========================================
-   COMMIT COUNT
-========================================= */
-
-.commits-count {
-  min-width: 115px;
-
-  padding: 13px 18px;
-
-  border: 1px solid #1a2b42;
-  border-radius: 10px;
-
-  background: #091321;
-
-  text-align: center;
-}
-
-.commits-count strong {
-  display: block;
-
-  color: #5d91ff;
-
-  font-size: 23px;
-  font-weight: 700;
-}
-
-.commits-count span {
-  display: block;
-
-  margin-top: 3px;
-
-  color: #718096;
-
-  font-size: 11px;
-}
-
-
-/* =========================================
-   MAIN CARD
-========================================= */
-
-.commits-card {
-  overflow: hidden;
-
-  border: 1px solid #18283e;
-  border-radius: 12px;
-
-  background: #091321;
-
-  box-shadow:
-    0 10px 30px rgba(0, 0, 0, 0.18);
-}
-
-
-/* =========================================
-   CARD HEADER
-========================================= */
-
-.commits-card-header {
-  display: flex;
-  align-items: center;
-
-  padding: 20px 22px;
-
-  border-bottom: 1px solid #18283e;
-}
-
-.commits-card-header h2 {
-  margin: 0;
-
-  color: #e8edf5;
-
-  font-size: 17px;
-  font-weight: 650;
-}
-
-.commits-card-header p {
-  margin: 5px 0 0;
-
-  color: #718096;
-
-  font-size: 12px;
-}
-
-
-/* =========================================
    COMMIT LIST
 ========================================= */
 
@@ -685,7 +238,7 @@
 
   color: #dce5f2;
 
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 600;
 
   line-height: 1.5;
@@ -705,7 +258,7 @@
 
   color: #718096;
 
-  font-size: 11px;
+  font-size: 14px;
 }
 
 .commit-meta span:first-child {
@@ -725,7 +278,7 @@
 
   margin-top: 7px;
 
-  font-size: 11px;
+  font-size: 14px;
 }
 
 .commit-repository span {
@@ -769,7 +322,7 @@
   color: #8494aa;
 
   font-family: monospace;
-  font-size: 11px;
+  font-size: 13px;
 }
 
 .commit-sha a {
