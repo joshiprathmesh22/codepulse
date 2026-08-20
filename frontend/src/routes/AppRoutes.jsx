@@ -10,7 +10,8 @@ import RepositoryBranches from "../pages/Dashboard/RepositoryBranches";
 import RepositoryPullRequests from "../pages/Dashboard/RepositoryPullRequests";
 import RepositoryIssues from "../pages/Dashboard/RepositoryIssues";
 import Commits from "../pages/Dashboard/Commits";
-
+import PullRequests from "../pages/Dashboard/PullRequests";
+import Issues from "../pages/Dashboard/Issues";
 
 function AppRoutes() {
   return (
@@ -28,7 +29,8 @@ function AppRoutes() {
         <Route path="/dashboard/repositories/:id/pull-requests" element={<RepositoryPullRequests />} />
         <Route path="/dashboard/repositories/:id/issues" element={<RepositoryIssues />}/> 
         <Route path="/dashboard/commits" element={<Commits />}/>
-        
+        <Route path="/dashboard/pull-requests" element={<PullRequests />} />
+        <Route path="/dashboard/issues" element={<Issues />}/>
         {/* Protected Routes */}
         <Route path="/dashboard" element={<Dashboard />} />
 

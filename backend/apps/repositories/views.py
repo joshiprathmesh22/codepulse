@@ -311,3 +311,93 @@ class AllCommitsView(APIView):
             "count": len(data),
             "commits": data,
         })
+
+class AllPullRequestsView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+
+        organization = request.user.organization
+
+        pull_requests = PullRequest.objects.filter(
+            repository__organization=organization
+        ).select_related(
+            "repository"
+        ).order_by(
+            "-created_at"
+        )
+
+        data = []
+
+        for pull_request in pull_requests:
+
+            data.append({
+                "id": pull_request.id,
+                "github_id": pull_request.github_id,
+                "title": pull_request.title,
+                "state": pull_request.state,
+                "author": pull_request.author,
+                "created_at": pull_request.created_at,
+                "merged": pull_request.merged,
+                "html_url": pull_request.html_url,
+
+                "repository": {
+                    "id": pull_request.repository.id,
+                    "name": pull_request.repository.name,
+                    "full_name": pull_request.repository.full_name,
+                },
+            })
+
+        return Response({
+            "count": len(data),
+            "pull_requests": data,
+        })
+
+class OrganizationIssuesView(APIView):
+
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+
+        organization = request.user.organization
+
+        issues = Issue.objects.filter(
+            repository__organization=organization
+        ).select_related(
+            "repository"
+        ).order_by(
+            "-created_at"
+        )
+
+        data = []
+
+        for issue in issues:
+
+            data.append(
+                {
+                    "id": issue.id,
+
+                    "title": issue.title,
+
+                    "state": issue.state,
+
+                    "author": issue.author,
+
+                    "created_at": issue.created_at,
+
+                    "html_url": issue.html_url,
+
+                    "repository": {
+                        "id": issue.repository.id,
+                        "name": issue.repository.name,
+                        "full_name": issue.repository.full_name,
+                    },
+                }
+            )
+
+        return Response(
+            {
+                "issues": data,
+                "total": issues.count(),
+            }
+        )

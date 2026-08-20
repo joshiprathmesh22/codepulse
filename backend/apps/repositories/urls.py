@@ -8,6 +8,8 @@ RepositoryBranchesView,
 RepositoryPullRequestsView,
 RepositoryIssuesView,
 AllCommitsView,
+AllPullRequestsView,
+OrganizationIssuesView,
 )
 urlpatterns = [
     path(
@@ -51,5 +53,15 @@ path(
     "all-commits/",
     AllCommitsView.as_view(),
     name="all-commits",
+),
+path(
+    "pull-requests/",
+    AllPullRequestsView.as_view(),
+    name="repository-pull-requests",
+),
+path(
+    "all/issues/",
+    OrganizationIssuesView.as_view(),
+    name="organization-issues",
 ),
 ]

@@ -1,0 +1,618 @@
+/* =========================================
+   ISSUES PAGE
+========================================= */
+
+.issues-page {
+  padding: 28px 24px 40px;
+}
+
+
+/* =========================================
+   BREADCRUMB
+========================================= */
+
+.issues-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  margin-bottom: 22px;
+
+  color: #718096;
+  font-size: 14px;
+}
+
+.issues-breadcrumb a {
+  color: #7f9ed6;
+  text-decoration: none;
+
+  transition: 0.2s ease;
+}
+
+.issues-breadcrumb a:hover {
+  color: #5d91ff;
+}
+
+.issues-breadcrumb span:last-child {
+  color: #c7d2e3;
+}
+
+
+/* =========================================
+   PAGE HEADER
+========================================= */
+
+.issues-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 20px;
+  margin-bottom: 24px;
+}
+
+.issues-header h1 {
+  margin: 0;
+
+  color: #f5f7fb;
+
+  font-size: 30px;
+  font-weight: 700;
+
+  letter-spacing: -0.5px;
+}
+
+.issues-header p {
+  margin: 7px 0 0;
+
+  color: #7f8da3;
+  font-size: 16px;
+}
+
+
+/* =========================================
+   ISSUE COUNT
+========================================= */
+
+.issues-count {
+  min-width: 105px;
+
+  padding: 13px 18px;
+
+  border: 1px solid #1a2b42;
+  border-radius: 10px;
+
+  background: #091321;
+
+  text-align: center;
+}
+
+.issues-count strong {
+  display: block;
+
+  color: #5d91ff;
+
+  font-size: 23px;
+  font-weight: 700;
+}
+
+.issues-count span {
+  display: block;
+
+  margin-top: 3px;
+
+  color: #718096;
+  font-size: 11px;
+}
+
+
+/* =========================================
+   ISSUE STATISTICS
+========================================= */
+
+.issues-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+
+  gap: 16px;
+
+  margin-bottom: 20px;
+}
+
+.issue-stat-card {
+  width: 100%;
+
+  padding: 18px 20px;
+
+  border: 1px solid #18283e;
+  border-radius: 12px;
+
+  background: #091321;
+
+  color: inherit;
+
+  text-align: left;
+
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.issue-stat-card:not(div) {
+  cursor: pointer;
+}
+
+.issue-stat-card:hover {
+  transform: translateY(-2px);
+
+  background: #0c192b;
+
+  border-color: #29466f;
+}
+
+.issue-stat-card.active {
+  border-color: #3267ed;
+
+  box-shadow:
+    0 0 0 1px rgba(50, 103, 237, 0.15);
+}
+
+.issue-stat-card span {
+  display: block;
+
+  margin-bottom: 8px;
+
+  color: #7f8da3;
+
+  font-size: 12px;
+}
+
+.issue-stat-card strong {
+  color: #dce5f2;
+
+  font-size: 25px;
+  font-weight: 700;
+}
+
+
+/* OPEN ISSUES */
+
+.issue-stat-card.open strong {
+  color: #3ddc84;
+}
+
+
+/* CLOSED ISSUES */
+
+.issue-stat-card.closed strong {
+  color: #ff6678;
+}
+
+
+/* =========================================
+   FILTERS
+========================================= */
+
+.issues-filters {
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
+
+  margin-bottom: 20px;
+}
+
+.issues-filters select {
+  min-width: 180px;
+  height: 44px;
+
+  padding: 0 38px 0 14px;
+
+  border: 1px solid #1a2b42;
+  border-radius: 9px;
+
+  background: #091321;
+
+  color: #b9c8dc;
+
+  font-size: 13px;
+
+  outline: none;
+  cursor: pointer;
+
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease;
+}
+
+.issues-filters select:hover {
+  border-color: #29466f;
+
+  background: #0c192b;
+}
+
+.issues-filters select:focus {
+  border-color: #3267ed;
+
+  box-shadow:
+    0 0 0 2px rgba(50, 103, 237, 0.12);
+}
+
+.issues-filters option {
+  background: #091321;
+
+  color: #dce5f2;
+}
+
+
+/* =========================================
+   MAIN ISSUES CARD
+========================================= */
+
+.issues-card {
+  overflow: hidden;
+
+  border: 1px solid #18283e;
+  border-radius: 12px;
+
+  background: #091321;
+
+  box-shadow:
+    0 10px 30px rgba(0, 0, 0, 0.18);
+}
+
+
+/* =========================================
+   CARD HEADER
+========================================= */
+
+.issues-card-header {
+  padding: 20px 22px;
+
+  border-bottom: 1px solid #18283e;
+}
+
+.issues-card-header h2 {
+  margin: 0;
+
+  color: #e8edf5;
+
+  font-size: 17px;
+  font-weight: 650;
+}
+
+.issues-card-header p {
+  margin: 5px 0 0;
+
+  color: #718096;
+
+  font-size: 12px;
+}
+
+
+/* =========================================
+   ISSUE LIST
+========================================= */
+
+.issue-list {
+  width: 100%;
+}
+
+
+/* =========================================
+   ISSUE ROW
+========================================= */
+
+.issue-row {
+  display: flex;
+  align-items: center;
+
+  gap: 15px;
+
+  min-height: 88px;
+
+  padding: 15px 22px;
+
+  border-bottom: 1px solid #142338;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.issue-row:last-child {
+  border-bottom: none;
+}
+
+.issue-row:hover {
+  background: #0c192b;
+
+  border-color: #1c3150;
+}
+
+
+/* =========================================
+   ISSUE ICON
+========================================= */
+
+.issue-icon {
+  flex-shrink: 0;
+
+  width: 36px;
+  height: 36px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  font-size: 15px;
+  font-weight: 700;
+}
+
+
+/* OPEN */
+
+.issue-icon.open {
+  border: 1px solid #1f7a4d;
+
+  background: rgba(31, 122, 77, 0.15);
+
+  color: #3ddc84;
+}
+
+
+/* CLOSED */
+
+.issue-icon.closed {
+  border: 1px solid #843f4a;
+
+  background: rgba(132, 63, 74, 0.15);
+
+  color: #ff6678;
+}
+
+
+/* =========================================
+   ISSUE MAIN CONTENT
+========================================= */
+
+.issue-main {
+  flex: 1;
+
+  min-width: 0;
+}
+
+.issue-main h3 {
+  margin: 0;
+
+  color: #dce5f2;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  line-height: 1.5;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+
+/* =========================================
+   ISSUE META
+========================================= */
+
+.issue-meta {
+  display: flex;
+  align-items: center;
+
+  gap: 7px;
+
+  margin-top: 7px;
+
+  color: #718096;
+
+  font-size: 11px;
+}
+
+.issue-meta span:first-child {
+  color: #9eacc0;
+}
+
+
+/* =========================================
+   REPOSITORY
+========================================= */
+
+.issue-repository {
+  display: flex;
+  align-items: center;
+
+  gap: 7px;
+
+  margin-top: 6px;
+
+  font-size: 11px;
+}
+
+.issue-repository span {
+  color: #718096;
+}
+
+.issue-repository a {
+  color: #7f9ed6;
+
+  text-decoration: none;
+
+  transition: 0.2s ease;
+}
+
+.issue-repository a:hover {
+  color: #5d91ff;
+}
+
+
+/* =========================================
+   STATUS BADGE
+========================================= */
+
+.issue-status {
+  flex-shrink: 0;
+
+  padding: 6px 10px;
+
+  border-radius: 6px;
+
+  font-size: 11px;
+  font-weight: 600;
+
+  text-transform: capitalize;
+}
+
+
+/* OPEN */
+
+.issue-status.open {
+  border: 1px solid rgba(61, 220, 132, 0.25);
+
+  background: rgba(61, 220, 132, 0.1);
+
+  color: #3ddc84;
+}
+
+
+/* CLOSED */
+
+.issue-status.closed {
+  border: 1px solid rgba(255, 102, 120, 0.25);
+
+  background: rgba(255, 102, 120, 0.1);
+
+  color: #ff6678;
+}
+
+
+/* =========================================
+   GITHUB BUTTON
+========================================= */
+
+.issue-github {
+  flex-shrink: 0;
+
+  width: 30px;
+  height: 30px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid #1b2b43;
+  border-radius: 6px;
+
+  background: #091626;
+
+  color: #718096;
+
+  text-decoration: none;
+
+  transition: 0.2s ease;
+}
+
+.issue-github:hover {
+  border-color: #3267ed;
+
+  background: #10264a;
+
+  color: #6fa0ff;
+}
+
+
+/* =========================================
+   EMPTY STATE
+========================================= */
+
+.issue-list .repositories-empty {
+  padding: 55px 20px;
+
+  text-align: center;
+
+  color: #718096;
+
+  font-size: 13px;
+}
+
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 900px) {
+
+  .issues-stats {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+}
+
+
+@media (max-width: 700px) {
+
+  .issues-page {
+    padding: 22px 16px 35px;
+  }
+
+  .issues-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .issues-count {
+    width: 100%;
+
+    box-sizing: border-box;
+  }
+
+  .issues-filters {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .issues-filters select {
+    width: 100%;
+  }
+
+  .issue-row {
+    padding: 14px 16px;
+  }
+
+}
+
+
+@media (max-width: 600px) {
+
+  .issues-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .issue-row {
+    align-items: flex-start;
+  }
+
+  .issue-icon {
+    width: 32px;
+    height: 32px;
+  }
+
+  .issue-status,
+  .issue-github {
+    display: none;
+  }
+
+  .issue-main h3 {
+    white-space: normal;
+  }
+
+}
