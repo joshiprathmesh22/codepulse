@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.db.models import Count
 
 from rest_framework import generics
 from django.shortcuts import get_object_or_404
@@ -154,6 +155,7 @@ class RepositoryCommitsView(APIView):
             "count": len(data),
             "commits": data,
         })
+    
 class RepositoryBranchesView(APIView):
 
     permission_classes = [IsAuthenticated]
@@ -401,3 +403,132 @@ class OrganizationIssuesView(APIView):
                 "total": issues.count(),
             }
         )
+class OrganizationBranchesView(APIView):
+
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+
+        organization = request.user.organization
+
+        branches = Branch.objects.filter(
+            repository__organization=organization
+        ).select_related(
+            "repository"
+        ).order_by(
+            "repository__name",
+            "-is_default",
+            "name",
+        )
+
+        data = []
+
+        for branch in branches:
+
+            data.append(
+                {
+                    "id": branch.id,
+
+                    "name": branch.name,
+
+                    "is_default": branch.is_default,
+
+                    "repository": {
+                        "id": branch.repository.id,
+                        "name": branch.repository.name,
+                        "full_name": branch.repository.full_name,
+                    },
+                }
+            )
+
+        return Response(
+            {
+                "branches": data,
+                "total": branches.count(),
+            }
+        )
+
+class OrganizationContributorsView(APIView):
+
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+
+        organization = request.user.organization
+
+        commits = Commit.objects.filter(
+            repository__organization=organization
+        )
+
+        contributors = (
+            commits
+            .values(
+                "author_name",
+                "author_email",
+            )
+            .annotate(
+                total_commits=Count("id"),
+                repositories_count=Count(
+                    "repository",
+                    distinct=True,
+                ),
+            )
+            .order_by(
+                "-total_commits",
+                "author_name",
+            )
+        )
+
+        data = []
+
+        for contributor in contributors:
+
+            contributor_commits = commits.filter(
+                author_email=contributor["author_email"]
+            )
+
+            repositories = (
+                contributor_commits
+                .values(
+                    "repository__id",
+                    "repository__name",
+                )
+                .annotate(
+                    commits=Count("id")
+                )
+                .order_by(
+                    "-commits"
+                )
+            )
+
+            repository_data = []
+
+            for repository in repositories:
+
+                repository_data.append(
+                    {
+                        "id": repository["repository__id"],
+                        "name": repository["repository__name"],
+                        "commits": repository["commits"],
+                    }
+                )
+
+            data.append(
+                {
+                    "name": contributor["author_name"],
+                    "email": contributor["author_email"],
+                    "total_commits": contributor["total_commits"],
+                    "repositories_count": contributor[
+                        "repositories_count"
+                    ],
+                    "repositories": repository_data,
+                }
+            )
+
+        return Response(
+            {
+                "contributors": data,
+                "total": len(data),
+            }
+        )
+

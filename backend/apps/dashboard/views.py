@@ -474,3 +474,405 @@ class DashboardOverviewView(APIView):
                 },
             }
         )
+
+class AnalyticsView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+
+        organization = request.user.organization
+
+        repositories = Repository.objects.filter(
+            organization=organization
+        )
+
+        commits = Commit.objects.filter(
+            repository__organization=organization
+        )
+
+        pull_requests = PullRequest.objects.filter(
+            repository__organization=organization
+        )
+
+        issues = Issue.objects.filter(
+            repository__organization=organization
+        )
+
+        # =========================================
+        # REPOSITORY PERFORMANCE
+        # =========================================
+
+        repository_performance = (
+            repositories
+            .annotate(
+                commits_count=Count("commits"),
+                pull_requests_count=Count(
+                    "pull_requests"
+                ),
+                issues_count=Count("issues"),
+            )
+            .values(
+                "id",
+                "name",
+                "commits_count",
+                "pull_requests_count",
+                "issues_count",
+            )
+            .order_by("-commits_count")
+        )
+
+        repository_performance = list(
+            repository_performance
+        )
+
+        # =========================================
+        # MOST ACTIVE REPOSITORY
+        # =========================================
+
+        most_active_repository = (
+            repository_performance[0]
+            if repository_performance
+            else None
+        )
+
+        # =========================================
+        # TOP CONTRIBUTORS
+        # =========================================
+
+        top_contributors = list(
+            commits
+            .values(
+                "author_name",
+                "author_email",
+            )
+            .annotate(
+                commits_count=Count("id")
+            )
+            .order_by("-commits_count")[:5]
+        )
+
+        # =========================================
+        # PULL REQUEST ANALYTICS
+        # =========================================
+
+        total_pull_requests = pull_requests.count()
+
+        merged_pull_requests = pull_requests.filter(
+            merged=True
+        ).count()
+
+        open_pull_requests = pull_requests.filter(
+            state="open"
+        ).count()
+
+        closed_pull_requests = pull_requests.filter(
+            state="closed"
+        ).count()
+
+        pull_request_success_rate = (
+            round(
+                (
+                    merged_pull_requests
+                    / total_pull_requests
+                ) * 100,
+                1,
+            )
+            if total_pull_requests > 0
+            else 0
+        )
+
+        # =========================================
+        # ISSUE ANALYTICS
+        # =========================================
+
+        total_issues = issues.count()
+
+        open_issues = issues.filter(
+            state="open"
+        ).count()
+
+        closed_issues = issues.filter(
+            state="closed"
+        ).count()
+
+        issue_resolution_rate = (
+            round(
+                (
+                    closed_issues
+                    / total_issues
+                ) * 100,
+                1,
+            )
+            if total_issues > 0
+            else 0
+        )
+
+        # =========================================
+        # RESPONSE
+        # =========================================
+
+        return Response(
+            {
+                "overview": {
+                    "repositories": repositories.count(),
+                    "commits": commits.count(),
+                    "pull_requests": total_pull_requests,
+                    "issues": total_issues,
+                },
+
+                "most_active_repository":
+                    most_active_repository,
+
+                "repository_performance":
+                    repository_performance,
+
+                "top_contributors":
+                    top_contributors,
+
+                "pull_request_analytics": {
+                    "total": total_pull_requests,
+                    "merged": merged_pull_requests,
+                    "open": open_pull_requests,
+                    "closed": closed_pull_requests,
+                    "success_rate":
+                        pull_request_success_rate,
+                },
+
+                "issue_analytics": {
+                    "total": total_issues,
+                    "open": open_issues,
+                    "closed": closed_issues,
+                    "resolution_rate":
+                        issue_resolution_rate,
+                },
+            }
+        )
+
+class AlertsView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+
+        organization = request.user.organization
+
+        repositories = Repository.objects.filter(
+            organization=organization
+        )
+
+        alerts = []
+
+        # =========================================
+        # GENERATE REPOSITORY ALERTS
+        # =========================================
+
+        for repository in repositories:
+
+            commits_count = Commit.objects.filter(
+                repository=repository
+            ).count()
+
+            branches_count = Branch.objects.filter(
+                repository=repository
+            ).count()
+
+            open_issues_count = Issue.objects.filter(
+                repository=repository,
+                state="open",
+            ).count()
+
+            open_pull_requests_count = PullRequest.objects.filter(
+                repository=repository,
+                state="open",
+            ).count()
+
+            repository_data = {
+                "id": repository.id,
+                "name": repository.name,
+            }
+
+            # =====================================
+            # CRITICAL ALERT
+            # =====================================
+
+            if not repository.is_active:
+
+                alerts.append(
+                    {
+                        "id": f"repo-{repository.id}-inactive",
+
+                        "type": "critical",
+
+                        "title": "Repository is inactive",
+
+                        "message": (
+                            f"{repository.name} is currently inactive."
+                        ),
+
+                        "repository": repository_data,
+                    }
+                )
+
+            # =====================================
+            # HIGH OPEN ISSUES
+            # =====================================
+
+            if open_issues_count >= 5:
+
+                alerts.append(
+                    {
+                        "id": (
+                            f"repo-{repository.id}-open-issues"
+                        ),
+
+                        "type": "critical",
+
+                        "title": "High number of open issues",
+
+                        "message": (
+                            f"{repository.name} has "
+                            f"{open_issues_count} open issues."
+                        ),
+
+                        "repository": repository_data,
+                    }
+                )
+
+            # =====================================
+            # NO COMMITS
+            # =====================================
+
+            if commits_count == 0:
+
+                alerts.append(
+                    {
+                        "id": f"repo-{repository.id}-no-commits",
+
+                        "type": "warning",
+
+                        "title": "No commits found",
+
+                        "message": (
+                            f"{repository.name} has no "
+                            f"commit activity."
+                        ),
+
+                        "repository": repository_data,
+                    }
+                )
+
+            # =====================================
+            # NO BRANCHES
+            # =====================================
+
+            if branches_count == 0:
+
+                alerts.append(
+                    {
+                        "id": f"repo-{repository.id}-no-branches",
+
+                        "type": "warning",
+
+                        "title": "No branches found",
+
+                        "message": (
+                            f"{repository.name} has no branches."
+                        ),
+
+                        "repository": repository_data,
+                    }
+                )
+
+            # =====================================
+            # TOO MANY OPEN PULL REQUESTS
+            # =====================================
+
+            if open_pull_requests_count >= 3:
+
+                alerts.append(
+                    {
+                        "id": (
+                            f"repo-{repository.id}-open-prs"
+                        ),
+
+                        "type": "warning",
+
+                        "title": "Multiple open pull requests",
+
+                        "message": (
+                            f"{repository.name} currently has "
+                            f"{open_pull_requests_count} "
+                            f"open pull requests."
+                        ),
+
+                        "repository": repository_data,
+                    }
+                )
+
+            # =====================================
+            # HEALTHY REPOSITORY
+            # =====================================
+
+            if (
+                repository.is_active
+                and commits_count > 0
+                and open_issues_count == 0
+            ):
+
+                alerts.append(
+                    {
+                        "id": f"repo-{repository.id}-healthy",
+
+                        "type": "info",
+
+                        "title": "Repository is healthy",
+
+                        "message": (
+                            f"{repository.name} has active "
+                            f"development and no open issues."
+                        ),
+
+                        "repository": repository_data,
+                    }
+                )
+
+        # =========================================
+        # ALERT SUMMARY
+        # =========================================
+
+        critical_count = sum(
+            1
+            for alert in alerts
+            if alert["type"] == "critical"
+        )
+
+        warning_count = sum(
+            1
+            for alert in alerts
+            if alert["type"] == "warning"
+        )
+
+        info_count = sum(
+            1
+            for alert in alerts
+            if alert["type"] == "info"
+        )
+
+        # =========================================
+        # RESPONSE
+        # =========================================
+
+        return Response(
+            {
+                "summary": {
+                    "total": len(alerts),
+
+                    "critical": critical_count,
+
+                    "warning": warning_count,
+
+                    "info": info_count,
+                },
+
+                "alerts": alerts,
+            }
+        )

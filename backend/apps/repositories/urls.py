@@ -10,6 +10,8 @@ RepositoryIssuesView,
 AllCommitsView,
 AllPullRequestsView,
 OrganizationIssuesView,
+OrganizationBranchesView,
+OrganizationContributorsView,
 )
 urlpatterns = [
     path(
@@ -63,5 +65,15 @@ path(
     "all/issues/",
     OrganizationIssuesView.as_view(),
     name="organization-issues",
+),
+path(
+    "all/branches/",
+    OrganizationBranchesView.as_view(),
+    name="organization-branches",
+),
+path(
+    "all/contributors/",
+    OrganizationContributorsView.as_view(),
+    name="organization-contributors",
 ),
 ]

@@ -151,3 +151,33 @@ export const getAllIssues  = async (repositoryId) => {
 
   return response.data;
 };
+
+export const getAllBranches  = async (repositoryId) => {
+  const token = localStorage.getItem("access");
+
+  const response = await api.get(
+    "/repositories/all/branches/",
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  return response.data;
+};
+
+export const getAllContributors  = async (repositoryId) => {
+  const token = localStorage.getItem("access");
+
+  const response = await api.get(
+    "/repositories/all/contributors/",
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  return response.data;
+};
