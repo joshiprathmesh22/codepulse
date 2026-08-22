@@ -16,6 +16,7 @@ import Branches from "../pages/Dashboard/Branches";
 import Contributors from "../pages/Dashboard/Contributors";
 import Analytics from "../pages/Dashboard/Analytics";
 import Alerts  from "../pages/Dashboard/Alerts";
+import Organization from "../pages/dashboard/Organization";
 
 function AppRoutes() {
   return (
@@ -39,6 +40,7 @@ function AppRoutes() {
         <Route path="/dashboard/contributors" element={<Contributors />}/>
         <Route path="/dashboard/analytics" element={<Analytics />}/>
         <Route path="/dashboard/alerts" element={<Alerts />}/>
+        <Route path="/dashboard/organization" element={<Organization />}/>
 
         {/* Protected Routes */}
         <Route path="/dashboard" element={<Dashboard />} />

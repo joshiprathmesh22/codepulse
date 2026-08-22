@@ -1,0 +1,617 @@
+/* =========================================
+   ORGANIZATION PAGE
+========================================= */
+
+.organization-page {
+  padding: 28px 24px 40px;
+}
+
+
+/* =========================================
+   BREADCRUMB
+========================================= */
+
+.organization-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  margin-bottom: 22px;
+
+  color: #718096;
+  font-size: 14px;
+}
+
+.organization-breadcrumb a {
+  color: #7f9ed6;
+  text-decoration: none;
+
+  transition: 0.2s ease;
+}
+
+.organization-breadcrumb a:hover {
+  color: #5d91ff;
+}
+
+.organization-breadcrumb span:last-child {
+  color: #c7d2e3;
+}
+
+
+/* =========================================
+   ORGANIZATION HEADER
+========================================= */
+
+.organization-header {
+  display: flex;
+  align-items: center;
+
+  margin-bottom: 26px;
+
+  padding: 24px;
+
+  border: 1px solid #18283e;
+  border-radius: 12px;
+
+  background: #091321;
+
+  box-shadow:
+    0 10px 30px rgba(0, 0, 0, 0.18);
+}
+
+.organization-profile {
+  display: flex;
+  align-items: center;
+
+  gap: 18px;
+}
+
+
+/* =========================================
+   ORGANIZATION AVATAR
+========================================= */
+
+.organization-avatar {
+  flex-shrink: 0;
+
+  width: 68px;
+  height: 68px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  overflow: hidden;
+
+  border: 1px solid #234477;
+  border-radius: 16px;
+
+  background: #10264a;
+
+  color: #6fa0ff;
+
+  font-size: 27px;
+  font-weight: 700;
+}
+
+.organization-avatar img {
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+}
+
+
+/* =========================================
+   ORGANIZATION TITLE
+========================================= */
+
+.organization-title {
+  min-width: 0;
+}
+
+.organization-name-row {
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
+}
+
+.organization-name-row h1 {
+  margin: 0;
+
+  color: #f5f7fb;
+
+  font-size: 28px;
+  font-weight: 700;
+
+  letter-spacing: -0.5px;
+}
+
+.organization-title p {
+  margin: 5px 0 0;
+
+  color: #7f8da3;
+
+  font-size: 14px;
+}
+
+.organization-created {
+  display: inline-block;
+
+  margin-top: 8px;
+
+  color: #718096;
+
+  font-size: 12px;
+}
+
+
+/* =========================================
+   PLAN BADGE
+========================================= */
+
+.organization-plan {
+  padding: 5px 10px;
+
+  border: 1px solid #234477;
+  border-radius: 20px;
+
+  background: #10264a;
+
+  color: #6fa0ff;
+
+  font-size: 11px;
+  font-weight: 600;
+
+  text-transform: capitalize;
+}
+
+
+/* =========================================
+   STATISTICS
+========================================= */
+
+.organization-stats-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(5, minmax(0, 1fr));
+
+  gap: 16px;
+
+  margin-bottom: 26px;
+}
+
+.organization-stat-card {
+  min-height: 125px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  padding: 20px;
+
+  border: 1px solid #18283e;
+  border-radius: 12px;
+
+  background: #091321;
+
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    background 0.2s ease;
+}
+
+.organization-stat-card:hover {
+  transform: translateY(-2px);
+
+  border-color: #234477;
+
+  background: #0c192b;
+}
+
+.organization-stat-card span {
+  color: #718096;
+
+  font-size: 12px;
+}
+
+.organization-stat-card strong {
+  display: block;
+
+  margin-top: 8px;
+
+  color: #e8edf5;
+
+  font-size: 27px;
+  font-weight: 700;
+}
+
+.organization-stat-card small {
+  margin-top: 5px;
+
+  color: #5d91ff;
+
+  font-size: 11px;
+}
+
+
+/* =========================================
+   MEMBERS CARD
+========================================= */
+
+.organization-members-card {
+  overflow: hidden;
+
+  border: 1px solid #18283e;
+  border-radius: 12px;
+
+  background: #091321;
+
+  box-shadow:
+    0 10px 30px rgba(0, 0, 0, 0.18);
+}
+
+
+/* =========================================
+   MEMBERS HEADER
+========================================= */
+
+.organization-members-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 20px;
+
+  padding: 21px 22px;
+
+  border-bottom: 1px solid #18283e;
+}
+
+.organization-members-header h2 {
+  margin: 0;
+
+  color: #e8edf5;
+
+  font-size: 17px;
+  font-weight: 650;
+}
+
+.organization-members-header p {
+  margin: 5px 0 0;
+
+  color: #718096;
+
+  font-size: 12px;
+}
+
+.organization-member-count {
+  flex-shrink: 0;
+
+  padding: 7px 11px;
+
+  border: 1px solid #1b2b43;
+  border-radius: 7px;
+
+  background: #07101f;
+
+  color: #8494aa;
+
+  font-size: 11px;
+}
+
+
+/* =========================================
+   MEMBERS LIST
+========================================= */
+
+.organization-members-list {
+  width: 100%;
+}
+
+
+/* =========================================
+   MEMBER ROW
+========================================= */
+
+.organization-member-row {
+  display: flex;
+  align-items: center;
+
+  gap: 15px;
+
+  min-height: 76px;
+
+  padding: 14px 22px;
+
+  border-bottom: 1px solid #142338;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.organization-member-row:last-child {
+  border-bottom: none;
+}
+
+.organization-member-row:hover {
+  background: #0c192b;
+
+  border-color: #1c3150;
+}
+
+
+/* =========================================
+   MEMBER AVATAR
+========================================= */
+
+.member-avatar {
+  flex-shrink: 0;
+
+  width: 38px;
+  height: 38px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid #234477;
+  border-radius: 50%;
+
+  background: #10264a;
+
+  color: #6fa0ff;
+
+  font-size: 14px;
+  font-weight: 700;
+}
+
+
+/* =========================================
+   MEMBER INFORMATION
+========================================= */
+
+.member-information {
+  flex: 1;
+  min-width: 0;
+}
+
+.member-information h3 {
+  margin: 0;
+
+  overflow: hidden;
+
+  color: #dce5f2;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.member-information span {
+  display: block;
+
+  margin-top: 5px;
+
+  overflow: hidden;
+
+  color: #718096;
+
+  font-size: 11px;
+
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+
+/* =========================================
+   MEMBER ROLE
+========================================= */
+
+.member-role {
+  flex-shrink: 0;
+
+  min-width: 95px;
+
+  text-align: center;
+}
+
+.role-badge {
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
+  min-width: 65px;
+
+  padding: 5px 9px;
+
+  border-radius: 20px;
+
+  font-size: 10px;
+  font-weight: 600;
+
+  text-transform: capitalize;
+}
+
+
+/* OWNER */
+
+.role-badge.owner {
+  border: 1px solid #6b4f1d;
+
+  background: #211b0d;
+
+  color: #d6aa4b;
+}
+
+
+/* ADMIN */
+
+.role-badge.admin {
+  border: 1px solid #234477;
+
+  background: #10264a;
+
+  color: #6fa0ff;
+}
+
+
+/* DEVELOPER */
+
+.role-badge.developer {
+  border: 1px solid #1f4d42;
+
+  background: #0d211d;
+
+  color: #55b89a;
+}
+
+
+/* VIEWER */
+
+.role-badge.viewer {
+  border: 1px solid #343b49;
+
+  background: #171b24;
+
+  color: #9aa5b5;
+}
+
+
+/* =========================================
+   JOINED DATE
+========================================= */
+
+.member-joined {
+  flex-shrink: 0;
+
+  min-width: 125px;
+
+  color: #718096;
+
+  font-size: 11px;
+
+  text-align: right;
+}
+
+
+/* =========================================
+   EMPTY STATE
+========================================= */
+
+.organization-empty {
+  padding: 55px 20px;
+
+  text-align: center;
+
+  color: #718096;
+
+  font-size: 13px;
+}
+
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 1100px) {
+
+  .organization-stats-grid {
+    grid-template-columns:
+      repeat(3, minmax(0, 1fr));
+  }
+
+}
+
+
+@media (max-width: 800px) {
+
+  .organization-page {
+    padding: 22px 16px 35px;
+  }
+
+  .organization-stats-grid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+  .organization-member-row {
+    padding: 14px 16px;
+  }
+
+  .member-joined {
+    display: none;
+  }
+
+}
+
+
+@media (max-width: 600px) {
+
+  .organization-header {
+    padding: 20px;
+  }
+
+  .organization-profile {
+    align-items: flex-start;
+  }
+
+  .organization-avatar {
+    width: 56px;
+    height: 56px;
+
+    border-radius: 14px;
+
+    font-size: 22px;
+  }
+
+  .organization-name-row {
+    flex-wrap: wrap;
+
+    gap: 8px;
+  }
+
+  .organization-name-row h1 {
+    font-size: 23px;
+  }
+
+  .organization-stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .organization-stat-card {
+    min-height: 100px;
+  }
+
+  .organization-members-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .organization-member-count {
+    width: 100%;
+
+    box-sizing: border-box;
+
+    text-align: center;
+  }
+
+  .member-role {
+    min-width: auto;
+  }
+
+  .member-information h3 {
+    white-space: normal;
+  }
+
+  .member-information span {
+    max-width: 130px;
+  }
+
+}

@@ -8,6 +8,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from apps.accounts.models import User
 from apps.repositories.models import Repository
 from apps.collaboration.models import (
     Commit,
@@ -874,5 +875,112 @@ class AlertsView(APIView):
                 },
 
                 "alerts": alerts,
+            }
+        )
+
+class OrganizationView(APIView):
+
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+
+        organization = request.user.organization
+
+        if not organization:
+
+            return Response(
+                {
+                    "detail": "User is not associated with an organization."
+                },
+                status=400,
+            )
+
+        # =========================================
+        # ORGANIZATION MEMBERS
+        # =========================================
+
+        members = organization.users.all().order_by(
+            "date_joined"
+        )
+
+        members_data = []
+
+        for member in members:
+
+            members_data.append(
+                {
+                    "id": member.id,
+
+                    "full_name": member.full_name,
+
+                    "email": member.email,
+
+                    "role": member.role,
+
+                    "date_joined": member.date_joined,
+                }
+            )
+
+        # =========================================
+        # ORGANIZATION REPOSITORIES
+        # =========================================
+
+        repositories = Repository.objects.filter(
+            organization=organization
+        )
+
+        # =========================================
+        # ORGANIZATION STATISTICS
+        # =========================================
+
+        commits = Commit.objects.filter(
+            repository__organization=organization
+        )
+
+        pull_requests = PullRequest.objects.filter(
+            repository__organization=organization
+        )
+
+        issues = Issue.objects.filter(
+            repository__organization=organization
+        )
+
+        # =========================================
+        # RESPONSE
+        # =========================================
+
+        return Response(
+            {
+                "organization": {
+                    "id": organization.id,
+
+                    "name": organization.name,
+
+                    "slug": organization.slug,
+
+                    "avatar": organization.avatar,
+
+                    "plan": organization.plan,
+
+                    "created_at": organization.created_at,
+                },
+
+                "statistics": {
+                    "members": members.count(),
+
+                    "repositories": repositories.count(),
+
+                    "active_repositories": repositories.filter(
+                        is_active=True
+                    ).count(),
+
+                    "commits": commits.count(),
+
+                    "pull_requests": pull_requests.count(),
+
+                    "issues": issues.count(),
+                },
+
+                "members": members_data,
             }
         )

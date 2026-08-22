@@ -60,3 +60,18 @@ export const getAlerts = async () => {
 
   return response.data;
 };
+
+export const getOrganization = async () => {
+  const token = localStorage.getItem("access");
+
+  const response = await api.get(
+    "/dashboard/organization/",
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  return response.data;
+};

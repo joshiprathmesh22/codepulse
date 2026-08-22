@@ -4,6 +4,7 @@ from .views import (
     DashboardOverviewView,
     AnalyticsView,
     AlertsView,
+    OrganizationView,
 )
 
 urlpatterns = [
@@ -22,5 +23,11 @@ urlpatterns = [
     "alerts/",
     AlertsView.as_view(),
     name="alerts",
-),
+    ),
+    
+    path(
+    "organization/",
+    OrganizationView.as_view(),
+    name="organization",
+    ),
 ]
